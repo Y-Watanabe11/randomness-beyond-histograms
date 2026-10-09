@@ -67,3 +67,13 @@ For physical entropy-source evaluation, see [NIST SP 800-90B](https://csrc.nist.
 ## Articles
 
 Companion writeups are planned for Qiita (implementation-oriented) and Medium (randomness, predictability, and entropy). The source scripts and numerical results here are the reproducibility reference.
+
+## Extra check: raw-bit recurrence at 5 ps
+
+To verify the companion Medium article's raw-bit lag comparison independently of SHA-256, run:
+
+```bash
+python experiments/measure_raw_lags_5ps.py
+```
+
+Under the same 5 ps toy noise model and 12 seeds as experiment B, mean raw-bit agreement is **98.217% at lag 2,000** and **92.456% at lag 32,000**. The latter is reported as **about 92.5%** in the article. See `data/raw_lag_5ps_12seeds.csv` for the per-seed results. The SHA-256 output template's ~50% accuracy is a different metric, and must not be interpreted as raw-bit unpredictability.
