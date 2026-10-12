@@ -106,3 +106,58 @@ See [Experiment D summary](data/experiment_D_headline.csv) and [Experiment D fig
 **Important:** Experiment D's 92.52% is calculated **only on the same held-out positions as the hashed comparison**. The earlier **92.456%** figure in the companion article was calculated over the *entire* available lag-paired sequence with 12 seeds. These are different protocols, not contradictory measurements. The ~50% hash **lag agreement** here is not identical to experiment B's ~50% *first-period template* accuracy (both are reported separately by the new script).
 
 Neither a failed predictor nor a near-50% SHA output agreement establishes entropy-rate or cryptographic security. The physical noise is simulated, and the approximation (1+q)/2 is a model for hash avalanche behavior, not a universal SHA theorem.
+
+
+## Experiment E: Eight predictors, same streaming holdout
+
+A second follow-up compares simple frequency forecasting, 1st/2nd-order
+Markov models, 2,000/32,000-bit lag replay, a **frozen** first-period template,
+logistic regression and histogram-based gradient boosting.
+
+Each one-step-ahead prediction is evaluated at identical chronological target
+positions. **Online/streaming protocol:** the models may use earlier observed
+test bits as lagged features when predicting the next test bit; they are not
+given the current target or any future bit. Model fitting is confined to
+training targets (indices 32,000 through the original 70% boundary).
+The fixed-template baseline is a *different*, offline forecast convention.
+Models are told the known simulated lags in advance; this is a favorable
+attacker assumption, not automatic feature discovery.
+
+Run:
+
+```bash
+python -m pip install -r requirements.txt
+python experiments/experiment_E.py --replicates 6
+python -m unittest discover -s tests -v
+```
+
+This runs seven synthetic jitter settings, six seeded runs per setting,
+and a frequency-preserving exact-shuffle negative control at zero jitter.
+Results are written to `outputs/experiment_E_results.csv` (all models and
+replicates), `outputs/experiment_E_summary.csv` (mean and normal-approximate
+95% CI across seeds), `outputs/experiment_E_predictors.png`, and the methodological note.
+The compact checked-in [Experiment E highlights](data/experiment_E_highlights.csv)
+and [figure](figures/experiment_E_predictors.svg) make results browsable.
+
+**At 5 ps synthetic jitter, 6-seed mean test accuracy:**
+
+| Method | Raw bits | SHA-256 output |
+|---|---:|---:|
+| Majority | 50.01% | 50.00% |
+| First-order Markov | 90.10% | 50.00% |
+| Lag 2,000 (online) | 98.19% | 49.95% |
+| Lag 32,000 (online) | 90.63% | 50.60% |
+| Logistic regression | 98.19% | 50.38% |
+| Histogram gradient boosting | 98.19% | 50.42% |
+
+The fitted learners can often recover the useful raw 2,000-bit lag, but
+under this particular setup they do not recover the hashed time dependence
+at 5 ps. **This does not prove that SHA-256 removes information or that the
+output stream is cryptographically unpredictable.** An observer who sees
+the SHA-256 inputs has different information than one who only sees the
+hash output. The test includes only finite chosen models, finite data,
+preset features and a toy model, not a general security analysis.
+
+The 50 ps raw stream still shows ~90% first-order Markov predictability
+due to the *deliberately near-integer* frequency ratio 4.9505 in this model.
+This is not a generic claim about real RO hardware.
