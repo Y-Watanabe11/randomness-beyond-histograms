@@ -77,3 +77,32 @@ python experiments/measure_raw_lags_5ps.py
 ```
 
 Under the same 5 ps toy noise model and 12 seeds as experiment B, mean raw-bit agreement is **98.217% at lag 2,000** and **92.456% at lag 32,000**. The latter is reported as **about 92.5%** in the article. See `data/raw_lag_5ps_12seeds.csv` for the per-seed results. The SHA-256 output template's ~50% accuracy is a different metric, and must not be interpreted as raw-bit unpredictability.
+
+
+## Experiment D: Why SHA-256 can hide a strongly repeating raw signal
+
+A follow-up mechanism test separates **bitwise agreement**, **whole input-block recurrence**, and **SHA-256 output agreement** using an identical held-out interval and the same 32,000-bit lag.
+
+**Headline result, modeled 5 ps jitter, 30 seeds (different held-out protocol from B/C):**
+
+| Measurement (lag 32,000) | Mean |
+|---|---:|
+| Raw input bit agreement | **92.52%** |
+| Exact matching 256-bit input blocks (q) | **1.19%** |
+| SHA-256 output bit agreement | **50.62%** |
+| Predicted SHA agreement from (1+q)/2 | **50.60%** |
+
+The empirical identity is **p(SHA bit match) = q + (1−q) p(SHA bit match | distinct input blocks)**. For distinct input blocks the observed bit-match rate is close to one half, so the SHA block-to-block recurrence is explained by q.
+
+To reproduce (Python 3.10+; ~30 seeds per setting):
+
+```bash
+python experiments/experiment_D.py --replicates 30
+python -m unittest discover -s tests -v
+```
+
+See [Experiment D summary](data/experiment_D_headline.csv) and [Experiment D figure](figures/experiment_D_mechanism.svg). The script additionally creates full per-seed data, a detailed summary with normal-approximate 95% CIs for means across seeds, a high-resolution PNG, and an interpretation note in `outputs/`.
+
+**Important:** Experiment D's 92.52% is calculated **only on the same held-out positions as the hashed comparison**. The earlier **92.456%** figure in the companion article was calculated over the *entire* available lag-paired sequence with 12 seeds. These are different protocols, not contradictory measurements. The ~50% hash **lag agreement** here is not identical to experiment B's ~50% *first-period template* accuracy (both are reported separately by the new script).
+
+Neither a failed predictor nor a near-50% SHA output agreement establishes entropy-rate or cryptographic security. The physical noise is simulated, and the approximation (1+q)/2 is a model for hash avalanche behavior, not a universal SHA theorem.
