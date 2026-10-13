@@ -161,3 +161,47 @@ preset features and a toy model, not a general security analysis.
 The 50 ps raw stream still shows ~90% first-order Markov predictability
 due to the *deliberately near-integer* frequency ratio 4.9505 in this model.
 This is not a generic claim about real RO hardware.
+
+
+## Experiment F: Can a predictor discover the lag without being told?
+
+**Result (synthetic, one-step-ahead online forecasting):** When discovering lags
+from earlier data, the raw stream reaches **99.60% at 5 ps** and **98.50% at
+50 ps** (12 noise seeds each). The SHA-256 output gives **50.59% at 5 ps**
+and **50.05% at 50 ps** for the same search method. A prespecified
+positive/negative lag search discovers **101** on the raw stream at 5 ps and
+**inverted lag 10** at 50 ps. Exact-shuffle controls retain their histograms
+and show no selected lags under the 1-percentage-point validation threshold.
+
+The known-lag comparison is **not an oracle upper bound**: the 4.9505 rational
+sampling ratio also creates near-perfect shorter lag relations,
+since \`101 × 4.9505 = 500.0005\` and \`10 × 4.9505 = 49.505\`, the latter
+nearly flipping the phase by half a cycle. This is a *constructed* property
+of the model and not characteristic of arbitrary physical oscillators.
+
+**Honest chronological protocol:** FFT autocorrelation on first 50% only
+(search lags 1..40,000), screen top 64 candidates on the next 20%,
+choose sign and lag if validation accuracy exceeds the majority baseline
+by at least **1 percentage point**, and evaluate only on the final 30%.
+Known-lag reference (raw lag 2,000, SHA lag 32,000) and train-fitted Markov-1
+are displayed for context. This is **online next-bit forecasting**:
+earlier observed *test* bits may be used as features, but no current or
+future target bit may be used. It is not a frozen multi-step forecast.
+
+\`\`\`bash
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
+python experiments/experiment_F.py --replicates 12 --shuffle-replicates 12
+\`\`\`
+
+Generated outputs under \`outputs/\`: per-run CSV, complete summary and
+95% Student-t CIs **across simulated seeds**, chart, methodological notes.
+Browse [summary highlights](data/experiment_F_highlights.csv) and
+[figure](figures/experiment_F_blind_discovery.svg) in GitHub.
+
+Zero-jitter is a deterministic *single* realization (no seed CI); the 12
+shuffles at each control setting are permutations of one underlying stream,
+not independent experimental hardware samples. A scan over many lags has
+multiple-comparison risk; distinct discovery, validation and evaluation
+windows prevent selection on final test outcomes. Failure of the tested
+predictors does not prove any form of cryptographic unpredictability.
