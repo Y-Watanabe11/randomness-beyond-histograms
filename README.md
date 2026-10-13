@@ -175,7 +175,7 @@ and show no selected lags under the 1-percentage-point validation threshold.
 
 The known-lag comparison is **not an oracle upper bound**: the 4.9505 rational
 sampling ratio also creates near-perfect shorter lag relations,
-since \`101 × 4.9505 = 500.0005\` and \`10 × 4.9505 = 49.505\`, the latter
+since `101 × 4.9505 = 500.0005` and `10 × 4.9505 = 49.505`, the latter
 nearly flipping the phase by half a cycle. This is a *constructed* property
 of the model and not characteristic of arbitrary physical oscillators.
 
@@ -188,13 +188,13 @@ are displayed for context. This is **online next-bit forecasting**:
 earlier observed *test* bits may be used as features, but no current or
 future target bit may be used. It is not a frozen multi-step forecast.
 
-\`\`\`bash
+```bash
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python experiments/experiment_F.py --replicates 12 --shuffle-replicates 12
-\`\`\`
+```
 
-Generated outputs under \`outputs/\`: per-run CSV, complete summary and
+Generated outputs under `outputs/`: per-run CSV, complete summary and
 95% Student-t CIs **across simulated seeds**, chart, methodological notes.
 Browse [summary highlights](data/experiment_F_highlights.csv) and
 [figure](figures/experiment_F_blind_discovery.svg) in GitHub.
