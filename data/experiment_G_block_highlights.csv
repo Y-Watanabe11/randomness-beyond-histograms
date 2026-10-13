@@ -1,0 +1,4 @@
+noise_model,raw_bit_match_32000_pct,exact_sha_input_blocks_pct,sha_bit_match_32000_pct,replicates,sigma_ps,ratio
+random_walk,90.628,1.074,50.604,6,5,4.9505
+ar1_increment,59.657,0.037,49.924,6,5,4.9505
+iid_phase,99.939,84.963,92.497,6,5,4.9505

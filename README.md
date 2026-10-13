@@ -205,3 +205,63 @@ not independent experimental hardware samples. A scan over many lags has
 multiple-comparison risk; distinct discovery, validation and evaluation
 windows prevent selection on final test outcomes. Failure of the tested
 predictors does not prove any form of cryptographic unpredictability.
+
+
+## Experiment G: Sensitivity to oscillator assumptions
+
+**Why:** Experiment F's striking blind-prediction accuracies depend on a
+synthetic RO sampling model. Experiment G varies the **oscillator/sample
+frequency ratio** (four choices), **noise process** (three choices),
+**synthetic noise amplitude** (5 and 50 ps), and **amount of discovery
+data** (96k, 144k and 192k bits). Zero-jitter controls and histogram-
+preserving permutations are included.
+
+The default command runs six noise seeds per noisy condition:
+
+```bash
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
+python experiments/experiment_G.py --replicates 6 --shuffle-replicates 6
+```
+
+Experiment G reuses the synthetic phase source and blind FFT lag-scanner from
+Experiments B/C and F. All forecasts share the **same final test interval**
+[268800,384000), using an **online one-step-ahead** protocol: past true
+test bits are available, but current and future answers are not. The FFT
+discovers top-64 lag candidates using only a discovery prefix, a **separate
+40,000-bit validation window** selects lag and sign against a 1-percentage-
+point majority improvement threshold, and the final test is never used for
+selection. The lag scan covers 1..40,000, so all three discovery budgets
+are long enough for the same search horizon.
+
+**Strongest finding (5 ps, ratio 4.9505, 6-seed mean):**
+
+| Noise process | Blind raw-bit prediction | Blind SHA-256 output prediction |
+|---|---:|---:|
+| Cumulative Gaussian phase random walk | **99.60%** | **50.50%** |
+| AR(1), rho=0.9, correlated *increments* | **99.01%** | **50.02%** |
+| Independent, non-accumulating Gaussian phase displacement | **99.94%** | **92.50%** |
+
+**Why:** Exact 256-bit block recurrence at a 32,000-bit lag was approximately
+**1.07%** for the random walk, **0.04%** for correlated phase increments,
+but **84.96%** for independent phase displacement. Corresponding SHA-output
+bit agreements were **50.60%**, **49.92%**, and **92.50%**.
+
+The **same numeric "5 ps" is NOT a matched physical noise level** for these
+different stochastic processes. These results show **model sensitivity**, not
+that one noise process is intrinsically better or more secure. The chosen
+ratios have artificial near-periodic relations; varying them here does not
+validate generalization to fabricated oscillators. Six seeds yield uncertainty
+intervals on **between-seed means**, not on independent bits. A zero-jitter
+deterministic stream has only one realization.
+
+The user-facing compact data and SVG figure are in
+[data/experiment_G_highlights.csv](data/experiment_G_highlights.csv) and
+[figures/experiment_G_noise_comparison.svg](figures/experiment_G_noise_comparison.svg).
+Run the script to create the complete per-run CSVs, full mean/95% Student-t
+summary, block-mechanism diagnostics, and three PNG plots in `outputs/`.
+Also see the standalone Experiment G package for the precise protocol, plots
+and **936 individual test records**.
+
+A failure to predict SHA-256 outputs with this finite lag scanner is NOT an
+entropy estimate or a claim of cryptographic security.
