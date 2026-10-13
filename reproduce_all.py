@@ -21,7 +21,9 @@ def close(label,observed,expected,tol,issues):
         issues.append(f"{label}: measured={observed:.9f}, expected={expected:.9f}, tolerance={tol}")
 
 def match(rows,**selectors):
-    hits=[r for r in rows if all(str(r[k])==str(v) for k,v in selectors.items())]
+    hits=[r for r in rows if all(
+        (float(r[k])==float(v) if k in ("jitter_ps","sigma_ps") else str(r[k])==str(v))
+        for k,v in selectors.items())]
     if len(hits)!=1:raise ValueError(f"Expected one row for {selectors}; got {len(hits)}")
     return hits[0]
 
@@ -60,7 +62,7 @@ def check(mode):
     r=match(bc,sigma_ps="5")
     close("B 5ps template",float(r["heldout_template_bit_accuracy_mean"]),.4999,.002,failures)
     close("C 5ps long-lag entropy",float(r["entropy_conditional_lag32000_mean"]),.99987,.002,failures)
-    r=match(dr,jitter_ps="5.0") if any(x["jitter_ps"]=="5.0" for x in dr) else match(dr,jitter_ps="5")
+    r=match(dr,jitter_ps="5")
     dref=match(table("data/experiment_D_headline.csv"),jitter_ps="5")
     for k in ("raw_bit_lag_agreement_mean","input_block_exact_match_mean","sha_bit_lag_agreement_mean"):
         close("D 5ps "+k,float(r[k]),float(dref[k]),.002,failures)
