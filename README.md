@@ -265,3 +265,17 @@ and **936 individual test records**.
 
 A failure to predict SHA-256 outputs with this finite lag scanner is NOT an
 entropy estimate or a claim of cryptographic security.
+
+
+## A–G evaluation protocol audit (TDS reproducibility)
+
+**Read [the experiment-by-experiment audit](docs/evaluation_protocol_audit.md) before comparing headline percentages.** This document distinguishes offline first-guess forecasting (A, B), descriptive conditional entropy (C), same-lag agreement (D), and one-step-ahead **online** forecasts with observed prior test bits (E, F, G). It includes an explicit 5-ps comparison table, seed counts, uncertainty conventions, generated-model caveats, and what is *not* demonstrated.
+
+Experiment G's four ratios were also checked for near-integer/half-cycle recurrences up to the **40,000-lag search limit**. Every ratio has a close arithmetic recurrence in that range, so these results should not be generalized to arbitrary oscillators. The `detuned_4.953327` label is shorthand for the actual ratio approximately **4.953328427**. To reproduce:
+
+```bash
+python experiments/audit_ratio_near_periods.py
+python -m unittest discover -s tests -v
+```
+
+[Ratio resonance CSV](data/ratio_near_periods.csv) · [Audit script](experiments/audit_ratio_near_periods.py)
