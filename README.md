@@ -279,3 +279,26 @@ python -m unittest discover -s tests -v
 ```
 
 [Ratio resonance CSV](data/ratio_near_periods.csv) · [Audit script](experiments/audit_ratio_near_periods.py)
+
+
+## Clean-room reproducibility and theoretical interpretation
+
+**Before submitting an article:** read the [evaluation protocol audit](docs/evaluation_protocol_audit.md) and [frequency-ratio / phase-diffusion theory note](docs/phase_recurrence_theory.md).
+
+From a **fresh checkout** (not a folder containing earlier experiment outputs), create an isolated environment, then run the orchestrator:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python reproduce_all.py --mode smoke
+# Full A-G with published replicate counts; G may take substantial time:
+python reproduce_all.py --mode full
+```
+
+- **Smoke** runs unit tests, A, small D invariants, and the deterministic ratio audit. This is only a functional check.
+- **Full** runs A, B/C, D (30 replicates), E (6), F (12), G (6), and the arithmetic audit in sequence. It checks critical generated artifacts and a preregistered selection of numerical endpoints against versioned results.
+- Both modes save per-step logs, runtime, versions, commit, SHA-256 checksums of generated artifacts and any failures to `outputs/repro_manifest_<mode>.json`. **Only treat a fresh full-mode PASS as end-to-end reproduced**. Unit tests alone do not establish that all published numbers were regenerated.
+- Some results are nonlinear functions of a deterministic PRNG. Different NumPy/SciPy/scikit-learn versions may affect bitwise reproducibility; record and retain the generated manifest.
+- The code **does not** infer phase-noise parameters from physical silicon and makes no claim of cryptographic safety.
