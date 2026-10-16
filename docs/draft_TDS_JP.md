@@ -188,7 +188,7 @@ $
 | **AR(1)位相増分** | 99.01% | **50.02%** |
 | **独立位相ゆらぎ** | 99.94% | **92.50%** |
 
-![Figure 4：位相ノイズモデルによる予測精度の違い](../figures/fig4_source_model_sensitivity.png)
+![Figure 4：位相ノイズモデルによる予測精度の違い](../figures/fig4_source_model_sensitivity_revised.svg)
 
 *Figure 4. 実験Gの周波数比4.9505、ジッタ5 psにおけるノイズモデル比較（6シード）。周波数比は固定しており、5 psはモデル間で物理的に等価なノイズ強度を意味しない。*
 
