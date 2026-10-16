@@ -15,7 +15,7 @@
 - 数列1の予測精度：100%
 
 - 数列2の予測精度：1.34%（当てずっぽうの1%とほぼ同じ）
-![実験A](../figures/fig1_identical_histograms.png)
+![実験A](../figures/fig1_identical_histograms_red.svg)
 
 If the two sequences have identical distributions, why is one so much easier to predict?
 タネを明かせばシンプルです。片方の数列は規則的な順序で並んでおり、もう片方はそれを完全にシャッフルしたものです。
