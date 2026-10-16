@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1210 425" role="img" aria-label="Experiment G accuracy by sampling frequency ratio and noise model">
+<rect width="1210" height="425" fill="#ffffff"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#202733">
+<text x="30" y="36" font-size="22" font-weight="bold">Experiment G: Predictability depends on ratio and noise model</text>
+<text x="30" y="61" font-size="13" fill="#64748b">5 ps synthetic jitter · 6 seeds · 192,000-bit discovery · 40,000-bit validation · online test</text>
+<text x="356" y="98" text-anchor="middle" font-size="17" font-weight="bold">Raw oscillator bits</text>
+<text x="204" y="125" text-anchor="middle" font-size="12" fill="#475569">4.9505</text>
+<text x="298" y="125" text-anchor="middle" font-size="12" fill="#475569">4.953328*</text>
+<text x="392" y="125" text-anchor="middle" font-size="12" fill="#475569">4.917321</text>
+<text x="486" y="125" text-anchor="middle" font-size="12" fill="#475569">4.618034*</text>
+<text x="143" y="180" text-anchor="end" font-size="13" fill="#334155">Random walk</text>
+<rect x="162" y="145" width="84" height="51" fill="#245e8a" rx="3"/>
+<text x="204" y="176" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.60%</text>
+<rect x="256" y="145" width="84" height="51" fill="#235e8a" rx="3"/>
+<text x="298" y="176" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.64%</text>
+<rect x="350" y="145" width="84" height="51" fill="#245e8a" rx="3"/>
+<text x="392" y="176" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.54%</text>
+<rect x="444" y="145" width="84" height="51" fill="#245e8a" rx="3"/>
+<text x="486" y="176" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.56%</text>
+<text x="143" y="244" text-anchor="end" font-size="13" fill="#334155">AR(1) increments</text>
+<rect x="162" y="209" width="84" height="51" fill="#26608b" rx="3"/>
+<text x="204" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.01%</text>
+<rect x="256" y="209" width="84" height="51" fill="#28618c" rx="3"/>
+<text x="298" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">98.60%</text>
+<rect x="350" y="209" width="84" height="51" fill="#255f8b" rx="3"/>
+<text x="392" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.22%</text>
+<rect x="444" y="209" width="84" height="51" fill="#27618c" rx="3"/>
+<text x="486" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">98.68%</text>
+<text x="143" y="308" text-anchor="end" font-size="13" fill="#334155">IID phase</text>
+<rect x="162" y="273" width="84" height="51" fill="#225d89" rx="3"/>
+<text x="204" y="304" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.94%</text>
+<rect x="256" y="273" width="84" height="51" fill="#225d89" rx="3"/>
+<text x="298" y="304" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.94%</text>
+<rect x="350" y="273" width="84" height="51" fill="#225d89" rx="3"/>
+<text x="392" y="304" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.94%</text>
+<rect x="444" y="273" width="84" height="51" fill="#225d89" rx="3"/>
+<text x="486" y="304" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.94%</text>
+<text x="351" y="360" text-anchor="middle" font-size="13" fill="#334155">(a) Raw-bit online prediction</text>
+<text x="883" y="98" text-anchor="middle" font-size="17" font-weight="bold">SHA-256 output bits</text>
+<text x="731" y="125" text-anchor="middle" font-size="12" fill="#475569">4.9505</text>
+<text x="825" y="125" text-anchor="middle" font-size="12" fill="#475569">4.953328*</text>
+<text x="919" y="125" text-anchor="middle" font-size="12" fill="#475569">4.917321</text>
+<text x="1013" y="125" text-anchor="middle" font-size="12" fill="#475569">4.618034*</text>
+<rect x="689" y="145" width="84" height="51" fill="#e9f1f7" rx="3"/>
+<text x="731" y="176" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.49%</text>
+<rect x="783" y="145" width="84" height="51" fill="#e7eff6" rx="3"/>
+<text x="825" y="176" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.90%</text>
+<rect x="877" y="145" width="84" height="51" fill="#e2ecf3" rx="3"/>
+<text x="919" y="176" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">52.18%</text>
+<rect x="971" y="145" width="84" height="51" fill="#e8eff6" rx="3"/>
+<text x="1013" y="176" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.85%</text>
+<rect x="689" y="209" width="84" height="51" fill="#ebf2f8" rx="3"/>
+<text x="731" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.02%</text>
+<rect x="783" y="209" width="84" height="51" fill="#ebf2f8" rx="3"/>
+<text x="825" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">49.97%</text>
+<rect x="877" y="209" width="84" height="51" fill="#eaf1f8" rx="3"/>
+<text x="919" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.19%</text>
+<rect x="971" y="209" width="84" height="51" fill="#ebf2f8" rx="3"/>
+<text x="1013" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">49.95%</text>
+<rect x="689" y="273" width="84" height="51" fill="#40739a" rx="3"/>
+<text x="731" y="304" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">92.50%</text>
+<rect x="783" y="273" width="84" height="51" fill="#4e7ea1" rx="3"/>
+<text x="825" y="304" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">89.04%</text>
+<rect x="877" y="273" width="84" height="51" fill="#eaf2f8" rx="3"/>
+<text x="919" y="304" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.15%</text>
+<rect x="971" y="273" width="84" height="51" fill="#cfdde8" rx="3"/>
+<text x="1013" y="304" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">57.01%</text>
+<text x="878" y="360" text-anchor="middle" font-size="13" fill="#334155">(b) Hash-output online prediction</text>
+<text x="30" y="392" font-size="12" fill="#64748b">* Rounded ratio labels: detuned = 4.9505 + 0.002√2; golden = 4 + (√5 − 1)/2.</text>
+<text x="30" y="412" font-size="12" fill="#64748b">Color scale: pale ≈50%, dark ≈100%. Values are per-condition means, not entropy estimates.</text>
+</g>
+</svg>
