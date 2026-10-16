@@ -195,6 +195,10 @@ $
 
 約4.953328の条件は、実装では $4.9505+0.002\sqrt2$ と定義した**無理数比**です。それでも89.04%の精度が得られました。厳密な有理数比であることは必須ではありません。今回の範囲では、256ビットのブロック境界と整列する良好な**近似周期**が探索範囲内にあり、それが雑音の下でどれだけ再現されるかが結果に関係します。これはSection 4の数論的な位相関係ともつながります。
 
+![Figure 5：周波数比と位相ノイズモデルによる予測精度の違い](../figures/fig5_ratio_model_sensitivity.svg)
+
+*Figure 5. 実験G：5 ps、6シード、探索192,000ビット・検証40,000ビット。4種類の周波数比と3種類のノイズモデルを比較したオンライン予測精度。左がRO生ビット、右がSHA-256出力。*
+
 なぜこんなことが起きるのでしょうか？
 独立位相ゆらぎモデルでは位相偏差が累積しないため、離れた時点でも入力ブロックを再現しやすくなります。このモデルの32,000ビットラグでの256ビットブロック完全一致率は約84.96%でした。これは、SHA-256出力に高い一致率が残る仕組みを説明します。ただし、このブロック一致率と表にある**オンライン予測精度92.50%は別の評価量**です。
 
@@ -247,5 +251,7 @@ Prediction accuracy describes a particular experiment. It is not a universal cer
 - [1] NIST, *Recommendation for the Entropy Sources Used for Random Bit Generation*, NIST SP 800-90B (2018). https://doi.org/10.6028/NIST.SP.800-90B
 - [2] M. Baudet, D. Lubicz, J. Micolod, A. Tassiaux, *On the Security of Oscillator-Based Random Number Generators*, *Journal of Cryptology* **24**, 398–425 (2011). https://doi.org/10.1007/s00145-010-9089-3
 - [3] A. Peetermans, V. Rožić, I. Verbauwhede, *Design and Analysis of Configurable Ring Oscillators for True Random Number Generation Based on Coherent Sampling*, *ACM Transactions on Reconfigurable Technology and Systems* (2021). https://doi.org/10.1145/3433166
+
+図5は[Pythonの再生成コード](../experiments/plot_G_ratio_sensitivity.py)を実行すると、実験GのCSVから再作成できます。
 
 実装の詳細は[未知ラグ探索のコード](../experiments/experiment_F.py)、[ノイズモデル比較のコード](../experiments/experiment_G.py)、[評価プロトコル監査](evaluation_protocol_audit.md)、[位相再帰の理論メモ](phase_recurrence_theory.md)で確認できます。いずれも合成ROモデルの結果であり、実デバイスの測定、実機のエントロピー率やSHA-256の暗号学的安全性の検証ではありません。
