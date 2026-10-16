@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="633.95pt" height="382.77pt" viewBox="0 0 633.95 382.77" role="img" aria-label="Same histogram with 100% original prediction accuracy and 1.34% after exact shuffling">
+<rect width="633.95" height="382.77" fill="white"/>
+<g font-family="DejaVu Sans,Arial,sans-serif" fill="#273142">
+<path d="M86.625 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="86.625" y="200.442" font-size="10.5" text-anchor="middle" >0</text>
+<path d="M139.635 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="139.635" y="200.442" font-size="10.5" text-anchor="middle" >10</text>
+<path d="M192.64499999999998 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="192.64499999999998" y="200.442" font-size="10.5" text-anchor="middle" >20</text>
+<path d="M245.655 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="245.655" y="200.442" font-size="10.5" text-anchor="middle" >30</text>
+<path d="M298.66499999999996 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="298.66499999999996" y="200.442" font-size="10.5" text-anchor="middle" >40</text>
+<path d="M351.675 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="351.675" y="200.442" font-size="10.5" text-anchor="middle" >50</text>
+<path d="M404.685 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="404.685" y="200.442" font-size="10.5" text-anchor="middle" >60</text>
+<path d="M457.695 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="457.695" y="200.442" font-size="10.5" text-anchor="middle" >70</text>
+<path d="M510.705 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="510.705" y="200.442" font-size="10.5" text-anchor="middle" >80</text>
+<path d="M563.7149999999999 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="563.7149999999999" y="200.442" font-size="10.5" text-anchor="middle" >90</text>
+<path d="M616.725 22.698V185.463" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width=".7"/>
+<text x="616.725" y="200.442" font-size="10.5" text-anchor="middle" >100</text>
+<path d="M86.625 157.918H616.725" fill="none" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width="0.7"/>
+<text x="79.625" y="161.918" font-size="10.5" text-anchor="end" >0.6</text>
+<path d="M86.625 122.748H616.725" fill="none" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width="0.7"/>
+<text x="79.625" y="126.748" font-size="10.5" text-anchor="end" >0.8</text>
+<path d="M86.625 87.577H616.725" fill="none" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width="0.7"/>
+<text x="79.625" y="91.577" font-size="10.5" text-anchor="end" >1.0</text>
+<path d="M86.625 52.406H616.725" fill="none" stroke="#b0b0b0" stroke-opacity="0.15" stroke-width="0.7"/>
+<text x="79.625" y="56.406" font-size="10.5" text-anchor="end" >1.2</text>
+<path d="M86.625 22.698V185.463H616.725" fill="none" stroke="#000" stroke-width=".8"/>
+<text x="351.675" y="16.698" font-size="12.5" text-anchor="middle" >(a) Identical empirical histograms</text>
+<text x="351.675" y="214.604" font-size="10.5" text-anchor="middle" >Integer value</text>
+<text transform="translate(56.743 104.081) rotate(-90)" font-size="10.5" text-anchor="middle">Frequency (%)</text>
+<text x="611.424" y="32.944" font-size="9.2" text-anchor="end" fill="#667085">74,160 integers · values 0–99</text>
+<defs><clipPath id="plot"><rect x="86.625" y="22.698" width="530.1" height="162.765"/></clipPath></defs><path d="m86.625 115.46 5.301-11.382 5.301-5.6911 5.301-62.602 5.301 39.838 5.301 11.382 5.301-5.6911 5.301-39.838 5.301 45.529 5.301 11.382 5.301-11.382 5.301 17.073 5.301-51.22 5.301 39.838 5.301-62.602 5.301 91.058 5.301-5.6911 5.301-22.764 5.301-5.6911 5.301 11.382 5.301-51.22 5.301 28.455 5.301 51.22 5.301-34.147 5.301-45.529 5.301 56.911 5.301 73.984 5.301-102.44 5.301-17.073 5.301-22.764 5.301 85.366 5.301-39.838 5.301 34.147h5.301l5.301-56.911 10.602 56.911 5.301-62.602 5.301 45.529 5.301-28.455 5.301 34.147 5.301-17.073 5.301-34.147 5.301 17.073 5.301-22.764 5.301 11.382 5.301 51.22 5.301-11.382 5.301-17.073 5.301 22.764h5.301l5.301-39.838 5.301-11.382 5.301 85.366 5.301-108.13 5.301 28.455 5.301 5.6911 5.301-28.455 5.301 62.602 5.301-5.6911 5.301-17.073 5.301 56.911 5.301 5.6911 5.301-22.764 5.301-51.22 5.301 45.529 5.301-28.455 5.301-45.529 5.301 56.911 5.301 28.455 5.301-11.382 5.301-34.147 5.301 28.455 5.301-68.293 5.301 96.749 5.301-17.073 5.301-62.602 5.301 45.529 5.301-5.6911 5.301-51.22 5.301 34.147 5.301 62.602 5.301-68.293 5.301 28.455 5.301 5.6911 5.301-56.911 5.301 28.455 5.301 45.529h5.301l5.301-5.6911 5.301-22.764 5.301-5.6911 5.301-34.147 5.301 45.529h5.301l5.301-5.6911 5.301 34.147 10.602-22.764 5.301-22.764" fill="none" stroke="#245b81" stroke-linecap="square" stroke-width="1.55" clip-path="url(#plot)"/>
+<path d="M86.625 253.825V344.25" stroke="#b0b0b0" stroke-opacity="0.13" stroke-width=".7"/>
+<text x="86.625" y="359.228" font-size="10.5" text-anchor="middle" >0</text>
+<path d="M183.0068 253.825V344.25" stroke="#b0b0b0" stroke-opacity="0.13" stroke-width=".7"/>
+<text x="183.0068" y="359.228" font-size="10.5" text-anchor="middle" >20</text>
+<path d="M279.3886 253.825V344.25" stroke="#b0b0b0" stroke-opacity="0.13" stroke-width=".7"/>
+<text x="279.3886" y="359.228" font-size="10.5" text-anchor="middle" >40</text>
+<path d="M375.7704 253.825V344.25" stroke="#b0b0b0" stroke-opacity="0.13" stroke-width=".7"/>
+<text x="375.7704" y="359.228" font-size="10.5" text-anchor="middle" >60</text>
+<path d="M472.1522 253.825V344.25" stroke="#b0b0b0" stroke-opacity="0.13" stroke-width=".7"/>
+<text x="472.1522" y="359.228" font-size="10.5" text-anchor="middle" >80</text>
+<path d="M568.534 253.825V344.25" stroke="#b0b0b0" stroke-opacity="0.13" stroke-width=".7"/>
+<text x="568.534" y="359.228" font-size="10.5" text-anchor="middle" >100</text>
+<path d="M86.625 253.825V344.25H616.725" fill="none" stroke="#000" stroke-width=".8"/><rect x="86.625" y="257.94" width="481.91" height="26.66" fill="#245b81"/><rect x="86.625" y="313.48" width="6.4549" height="26.66" fill="#c16a2d"/>
+<text x="79.625" y="275.255" font-size="10.5" text-anchor="end" >Original order</text>
+<text x="79.625" y="330.798" font-size="10.5" text-anchor="end" >Exact shuffle</text>
+<text x="351.675" y="247.825" font-size="12.5" text-anchor="middle" >(b) Predictability on unseen data</text>
+<text x="351.675" y="373.39" font-size="10.5" text-anchor="middle" >Correct first guesses on test set (%)</text>
+<text x="575.763" y="274.025" font-size="10" text-anchor="start" font-weight="700">100.00%</text>
+<text x="100.309" y="329.569" font-size="10" text-anchor="start" font-weight="700">1.34%</text>
+<text x="433.6" y="329.85" fill="#b22222" font-family="DejaVu Serif,Georgia,serif" font-size="11.3" font-weight="700" font-style="italic">Only the order changes.</text>
+</g></svg>
