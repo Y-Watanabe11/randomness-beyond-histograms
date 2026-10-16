@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="714.25pt" height="331.20pt" viewBox="0 0 714.25 331.20" role="img" aria-label="Agreement at 32000-bit lag across jitter levels">
+<rect width="714.25" height="331.20" fill="#fff"/>
+<g font-family="DejaVu Sans, Arial, sans-serif" fill="#1f2937">
+<text x="59.8" y="30" font-size="16">Lag-aligned recurrence after SHA-256</text>
+<path d="M76.433 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M76.433 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="76.433" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 76.433 290)">0</text>
+<path d="M131.985 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M131.985 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="131.985" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 131.985 290)">0.02</text>
+<path d="M187.537 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M187.537 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="187.537" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 187.537 290)">0.05</text>
+<path d="M243.089 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M243.089 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="243.089" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 243.089 290)">0.1</text>
+<path d="M298.64 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M298.64 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="298.64" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 298.64 290)">0.2</text>
+<path d="M354.192 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M354.192 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="354.192" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 354.192 290)">0.5</text>
+<path d="M409.744 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M409.744 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="409.744" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 409.744 290)">1</text>
+<path d="M465.295 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M465.295 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="465.295" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 465.295 290)">2</text>
+<path d="M520.847 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M520.847 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="520.847" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 520.847 290)">5</text>
+<path d="M576.399 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M576.399 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="576.399" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 576.399 290)">10</text>
+<path d="M631.951 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M631.951 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="631.951" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 631.951 290)">20</text>
+<path d="M687.502 74.016V272.736" stroke="#c9cdd2" stroke-opacity=".23" stroke-width=".5"/>
+<path d="M687.502 272.736v3.5" stroke="#111" stroke-width=".8"/>
+<text x="687.502" y="290" font-size="10.5" text-anchor="end" transform="rotate(-35 687.502 290)">50</text>
+<path d="M59.768 267.216H704.168" stroke="#c9cdd2" stroke-width=".65" stroke-opacity=".48"/>
+<text x="52.5" y="270.716" font-size="10.5" text-anchor="end">0</text>
+<path d="M59.768 230.416H704.168" stroke="#c9cdd2" stroke-width=".65" stroke-opacity=".48"/>
+<text x="52.5" y="233.916" font-size="10.5" text-anchor="end">20</text>
+<path d="M59.768 193.616H704.168" stroke="#c9cdd2" stroke-width=".65" stroke-opacity=".48"/>
+<text x="52.5" y="197.116" font-size="10.5" text-anchor="end">40</text>
+<path d="M59.768 175.216H704.168" stroke="#6b7280" stroke-width=".95" stroke-dasharray="2.5 4"/>
+<text x="52.5" y="178.716" font-size="10.5" text-anchor="end">50</text>
+<path d="M59.768 156.816H704.168" stroke="#c9cdd2" stroke-width=".65" stroke-opacity=".48"/>
+<text x="52.5" y="160.316" font-size="10.5" text-anchor="end">60</text>
+<path d="M59.768 120.016H704.168" stroke="#c9cdd2" stroke-width=".65" stroke-opacity=".48"/>
+<text x="52.5" y="123.516" font-size="10.5" text-anchor="end">80</text>
+<path d="M59.768 83.216H704.168" stroke="#c9cdd2" stroke-width=".65" stroke-opacity=".48"/>
+<text x="52.5" y="86.716" font-size="10.5" text-anchor="end">100</text>
+<path d="M59.768 74.016V272.736H704.168" fill="none" stroke="#000" stroke-width=".8"/>
+<text x="381.968" y="318.83" font-size="11" text-anchor="middle">Synthetic per-step jitter setting (ps)</text>
+<text x="16" y="173.3" transform="rotate(-90 16 173.3)" font-size="11" text-anchor="middle">Agreement at lag 32,000 (%)</text>
+<path d="M70 49H97" stroke="#245b81" stroke-width="2"/>
+<circle cx="83.5" cy="49" r="2.5" fill="#245b81"/>
+<text x="104" y="53" font-size="10">Raw-bit agreement</text>
+<path d="M76.433 83.216 L131.985 83.282 L187.537 83.355 L243.089 83.489 L298.64 83.765 L354.192 84.595 L409.744 85.969 L465.295 88.721 L520.847 96.988 L576.399 110.773 L631.951 138.218 L687.502 175.911" stroke="#245b81" stroke-width="1.6" fill="none"/>
+<circle cx="76.433" cy="83.216" r="2.55" fill="#245b81"/>
+<circle cx="131.985" cy="83.282" r="2.55" fill="#245b81"/>
+<circle cx="187.537" cy="83.355" r="2.55" fill="#245b81"/>
+<path d="M243.089 83.459V83.52 M240.289 83.459H245.889 M240.289 83.52H245.889" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="243.089" cy="83.489" r="2.55" fill="#245b81"/>
+<path d="M298.64 83.703V83.828 M295.84 83.703H301.44 M295.84 83.828H301.44" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="298.64" cy="83.765" r="2.55" fill="#245b81"/>
+<path d="M354.192 84.441V84.75 M351.392 84.441H356.992 M351.392 84.75H356.992" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="354.192" cy="84.595" r="2.55" fill="#245b81"/>
+<path d="M409.744 85.662V86.277 M406.944 85.662H412.544 M406.944 86.277H412.544" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="409.744" cy="85.969" r="2.55" fill="#245b81"/>
+<path d="M465.295 88.104V89.339 M462.495 88.104H468.095 M462.495 89.339H468.095" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="465.295" cy="88.721" r="2.55" fill="#245b81"/>
+<path d="M520.847 95.447V98.528 M518.047 95.447H523.647 M518.047 98.528H523.647" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="520.847" cy="96.988" r="2.55" fill="#245b81"/>
+<path d="M576.399 107.689V113.857 M573.599 107.689H579.199 M573.599 113.857H579.199" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="576.399" cy="110.773" r="2.55" fill="#245b81"/>
+<path d="M631.951 132.12V144.315 M629.151 132.12H634.751 M629.151 144.315H634.751" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="631.951" cy="138.218" r="2.55" fill="#245b81"/>
+<path d="M687.502 171.666V180.156 M684.702 171.666H690.302 M684.702 180.156H690.302" fill="none" stroke="#245b81" stroke-width=".95"/>
+<circle cx="687.502" cy="175.911" r="2.55" fill="#245b81"/>
+<path d="M225 49H252" stroke="#c16a2d" stroke-width="2"/>
+<circle cx="238.5" cy="49" r="2.5" fill="#c16a2d"/>
+<text x="259" y="53" font-size="10">Exact 256-bit block match</text>
+<path d="M76.433 83.216 L131.985 99.994 L187.537 114.932 L243.089 133.182 L298.64 163.631 L354.192 215.614 L409.744 241.769 L465.295 256.98 L520.847 265.022 L576.399 266.753 L631.951 267.175 L687.502 267.216" stroke="#c16a2d" stroke-width="1.6" fill="none"/>
+<circle cx="76.433" cy="83.216" r="2.55" fill="#c16a2d"/>
+<path d="M131.985 97.16V102.829 M129.185 97.16H134.785 M129.185 102.829H134.785" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="131.985" cy="99.994" r="2.55" fill="#c16a2d"/>
+<path d="M187.537 111.724V118.14 M184.737 111.724H190.337 M184.737 118.14H190.337" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="187.537" cy="114.932" r="2.55" fill="#c16a2d"/>
+<path d="M243.089 129.164V137.2 M240.289 129.164H245.889 M240.289 137.2H245.889" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="243.089" cy="133.182" r="2.55" fill="#c16a2d"/>
+<path d="M298.64 157.124V170.137 M295.84 157.124H301.44 M295.84 170.137H301.44" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="298.64" cy="163.631" r="2.55" fill="#c16a2d"/>
+<path d="M354.192 208.866V222.362 M351.392 208.866H356.992 M351.392 222.362H356.992" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="354.192" cy="215.614" r="2.55" fill="#c16a2d"/>
+<path d="M409.744 237.524V246.015 M406.944 237.524H412.544 M406.944 246.015H412.544" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="409.744" cy="241.769" r="2.55" fill="#c16a2d"/>
+<path d="M465.295 255.041V258.92 M462.495 255.041H468.095 M462.495 258.92H468.095" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="465.295" cy="256.98" r="2.55" fill="#c16a2d"/>
+<path d="M520.847 264.593V265.45 M518.047 264.593H523.647 M518.047 265.45H523.647" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="520.847" cy="265.022" r="2.55" fill="#c16a2d"/>
+<path d="M576.399 266.578V266.928 M573.599 266.578H579.199 M573.599 266.928H579.199" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="576.399" cy="266.753" r="2.55" fill="#c16a2d"/>
+<path d="M631.951 267.13V267.22 M629.151 267.13H634.751 M629.151 267.22H634.751" fill="none" stroke="#c16a2d" stroke-width=".95"/>
+<circle cx="631.951" cy="267.175" r="2.55" fill="#c16a2d"/>
+<circle cx="687.502" cy="267.216" r="2.55" fill="#c16a2d"/>
+<path d="M426 49H453" stroke="#357a66" stroke-width="2"/>
+<circle cx="439.5" cy="49" r="2.5" fill="#357a66"/>
+<text x="460" y="53" font-size="10">SHA-256 output agreement</text>
+<path d="M76.433 83.216 L131.985 91.586 L187.537 99.046 L243.089 108.191 L298.64 123.352 L354.192 149.476 L409.744 162.595 L465.295 170.096 L520.847 174.079 L576.399 174.975 L631.951 175.174 L687.502 175.219" stroke="#357a66" stroke-width="1.6" fill="none"/>
+<circle cx="76.433" cy="83.216" r="2.55" fill="#357a66"/>
+<path d="M131.985 90.168V93.004 M129.185 90.168H134.785 M129.185 93.004H134.785" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="131.985" cy="91.586" r="2.55" fill="#357a66"/>
+<path d="M187.537 97.433V100.659 M184.737 97.433H190.337 M184.737 100.659H190.337" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="187.537" cy="99.046" r="2.55" fill="#357a66"/>
+<path d="M243.089 106.179V110.204 M240.289 106.179H245.889 M240.289 110.204H245.889" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="243.089" cy="108.191" r="2.55" fill="#357a66"/>
+<path d="M298.64 120.091V126.614 M295.84 120.091H301.44 M295.84 126.614H301.44" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="298.64" cy="123.352" r="2.55" fill="#357a66"/>
+<path d="M354.192 146.103V152.849 M351.392 146.103H356.992 M351.392 152.849H356.992" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="354.192" cy="149.476" r="2.55" fill="#357a66"/>
+<path d="M409.744 160.443V164.747 M406.944 160.443H412.544 M406.944 164.747H412.544" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="409.744" cy="162.595" r="2.55" fill="#357a66"/>
+<path d="M465.295 169.134V171.058 M462.495 169.134H468.095 M462.495 171.058H468.095" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="465.295" cy="170.096" r="2.55" fill="#357a66"/>
+<path d="M520.847 173.875V174.282 M518.047 173.875H523.647 M518.047 174.282H523.647" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="520.847" cy="174.079" r="2.55" fill="#357a66"/>
+<path d="M576.399 174.861V175.089 M573.599 174.861H579.199 M573.599 175.089H579.199" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="576.399" cy="174.975" r="2.55" fill="#357a66"/>
+<path d="M631.951 175.052V175.296 M629.151 175.052H634.751 M629.151 175.296H634.751" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="631.951" cy="175.174" r="2.55" fill="#357a66"/>
+<path d="M687.502 175.112V175.326 M684.702 175.112H690.302 M684.702 175.326H690.302" fill="none" stroke="#357a66" stroke-width=".95"/>
+<circle cx="687.502" cy="175.219" r="2.55" fill="#357a66"/>
+</g></svg>
