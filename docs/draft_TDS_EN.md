@@ -305,7 +305,7 @@ In contrast, 4.917321 is a rational number (4,917,321/1,000,000), but its predic
 
 So the distinction is not simply whether the frequency ratio is rational or irrational.
 
-What matters in these experiments is whether the predictor can find a useful approximate repetition that aligns with the 256-bit input-block boundaries, and whether that pattern survives the noise.
+These results suggest that a useful approximate recurrence aligned with the 256-bit input-block boundaries, together with its robustness to the chosen noise process, matters more than whether the frequency ratio is exactly rational.
 
 These findings do not imply that independent phase perturbations accurately describe all real oscillators. Physical ring-oscillator random number generators can exploit timing jitter as an entropy source [2], and actual circuits exhibit more complicated noise behavior.
 
