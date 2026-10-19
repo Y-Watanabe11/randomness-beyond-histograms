@@ -10,12 +10,11 @@ First, you count the frequency of each number in both sequences and plot their h
 
 But can you predict which number comes next in each sequence?
 
-We used a simple periodicity-based predictor and evaluated its first-guess accuracy on a held-out test segment. The results were striking:
-
+I used a simple periodicity-based predictor and evaluated its first-guess accuracy on a held-out test segment. The results were striking:
 - Sequence 1 prediction accuracy: **100.00%**
 - Sequence 2 prediction accuracy: **1.34%** (close to the 1% chance level for 100 possible values)
 
-![Figure 1: Identical histograms of ordered and shuffled sequences with contrasting test accuracy](../figures/fig1_identical_histograms_red.svg)
+![Figure 1: Identical histograms of ordered and shuffled sequences with contrasting test accuracy](../figures/fig1_tds.png)
 
 *Figure 1. Experiment A: An original sequence and its fully shuffled counterpart share identical occurrence counts across 74,160 integers. The top panel shows their shared empirical histogram; the bottom panel shows first-guess accuracy on a chronologically held-out test segment. Accuracy was 100.00% for the original order and 1.34% after shuffling.*
 
@@ -35,76 +34,88 @@ Since my research focuses on analog semiconductor circuit design, I gradually be
 
 What particularly intrigued me was how the regularity in an original sequence changes when passed through SHA-256.
 
-To investigate this question, let's use a synthetic model of a ring oscillator (RO), a circuit commonly used in hardware random number generators.
+To investigate this question, I used a synthetic model of a ring oscillator (RO), a circuit commonly used in hardware random number generators.
 
-We set the oscillation frequency to $f_{\mathrm{RO}} = 50\text{ MHz}$ (a period of $20\text{ ns}$) and the oscillation-to-sampling frequency ratio to $r = 4.9505$ (a sampling frequency of approximately $10.10\text{ MHz}$). In this experiment, a "jitter of $5\text{ ps}$" refers to $\sigma_t$, the standard deviation of the time error added to the phase increment between samples in a cumulative phase random walk model. The standard deviation of the phase increment error normalized to the oscillation period is $f_{\mathrm{RO}}\sigma_t$.
+I set the oscillation frequency to f_RO = 50 MHz (a period of 20 ns) and the oscillation-to-sampling frequency ratio to r = 4.9505 (a sampling frequency of approximately 10.10 MHz). In this experiment, a "jitter of 5 ps" refers to σ_t, the standard deviation of the time error added to the phase increment between samples in a cumulative phase random walk model. The standard deviation of the phase increment error normalized to the oscillation period is f_RO × σ_t.
 
-In this experiment, we divide the generated raw bit sequence into 256-bit blocks and hash each block separately with SHA-256, producing one 256-bit digest per block. This is our experimental choice: SHA-256 does not require a 256-bit input.
+I divided the generated raw bits into 256-bit input blocks and applied SHA-256 separately to each block, producing a 256-bit digest for every input block.
 
 What happens if there is zero noise (jitter) in the system? Due to the mathematical properties of the frequency ratio, the raw bit sequence repeats the exact same pattern with a period of 2,000 bits. Consequently, the SHA-256 output—processed in 256-bit blocks—also becomes a perfect repeat with a period of 32,000 bits. By memorizing a template of the past 32,000 bits, one can predict the future of even the SHA-256 output with 100% accuracy.
 
-Next, we introduce a small amount of synthetic cumulative phase jitter: a 5-picosecond (ps) standard deviation in the timing error added at each sampling step. This models one kind of timing uncertainty that can arise in real oscillators; it is not a measurement of a physical device. Using the same fixed-template predictor on the SHA-256 output, we obtain:
-
+Next, I introduced synthetic cumulative phase jitter: a 5-picosecond (ps) standard deviation in the timing error added at each sampling step. This models one kind of timing uncertainty that can arise in real oscillators; it is not a measurement of a physical device. The same fixed-template predictor produced:
 - 0 ps jitter: 100% prediction accuracy (fixed-template prediction of SHA output)
 - 5 ps jitter: 49.99% prediction accuracy (using the same predictor)
 
 In a binary prediction task, 49.99% is essentially chance-level performance. Under this fixed-template test, adding only 5 ps of per-step jitter was enough to eliminate the predictor's earlier advantage. But that result tells us about this predictor—not about every possible way to predict the signal.
 
-It would be premature to conclude that the underlying signal had become random. Did SHA-256 eliminate the regularity, or did it merely make that regularity harder for our predictor to detect? To answer that, we need to examine what happens inside each hash input block.
+It would be premature to conclude that the underlying signal had become random. Did SHA-256 eliminate the regularity, or simply make it harder for my predictor to detect? To answer this, I examined what happens at the hash-block level.
 
-*Did the underlying signal become unpredictable, or did our predictor simply lose the pattern it was using?*
+*Did the underlying signal become unpredictable, or did the predictor simply lose the pattern it was using?*
 
 ## Section 2 — Why the Hash Output Stops Repeating
 
-The key to understanding this abrupt shift lies in our experimental setup, where SHA-256 is applied to inputs partitioned into 256-bit blocks. Even if most of the raw bits are reproduced, a difference of just a single bit within a block destroys the reproducibility of the output for that input. To see this in action, we examined three "match rates" at a lag of 32,000 bits:
+The key is the 256-bit block boundary. A single differing input bit makes two blocks non-identical, and their SHA-256 digests will typically differ in many output positions. I measured three match rates at a lag of 32,000 bits:
+1. The raw-bit match rate.
+2. The exact match rate of complete 256-bit input blocks.
+3. The SHA-256 output-bit match rate.
 
-1. The periodic match rate of the raw bits
-2. The exact match rate of the entire 256-bit SHA-256 input blocks
+SHA-256 exhibits the avalanche effect: changing one input bit typically changes approximately half of the digest bits. This is a statistical tendency, not a guarantee for each pair of inputs.
 
-3. The match rate of the SHA-256 output bits
+Let q be the fraction of exactly matching input blocks, and s the output-bit match rate conditioned on differing input blocks.
 
-SHA-256 exhibits the "avalanche effect," a property where a small change in the input propagates across the entire output. Generally, when two input blocks differ, about half of the corresponding output bits are expected to match. Note that this is a statistical property and does not mean that exactly half of the bits flip for every single input pair.
+The resulting SHA-256 output-bit match rate, p_SHA, is:
 
-Let us define $q$ as the proportion of 256-bit input blocks that match their comparison target exactly, and $s$ as the proportion of corresponding SHA-256 output bits that match when the input blocks differ.
+![Equation 1: Exact decomposition of SHA-256 output bit agreement](../figures/eq1_sha_match_identity.png)
 
-The match rate of the output bits, $p_{\mathrm{SHA}}$, can then be expressed as:
+The identity separates matching and non-matching input blocks. Since I observed s ≈ 0.5 for differing blocks, it becomes:
 
-$$
-p_{\mathrm{SHA}} = q + (1 - q)s
-$$
+![Equation 2: Approximate agreement when distinct inputs share about half their hash-output bits](../figures/eq2_sha_match_approx.png)
 
-This is an identity partitioned into matching and non-matching input cases. Furthermore, because the output bit match rate for differing input blocks was approximately 50% ($s \approx 0.5$) in our dataset, we can approximate this as:
+At 5 ps, q was 1.19%, implying an output-bit match rate near 50.60%; the simulation yielded 50.62%.
 
-$$
-p_{\mathrm{SHA}} \approx \frac{1 + q}{2}
-$$
+![Figure 2: Raw bit, block, and SHA-256 output recurrence versus jitter](../figures/fig2_tds.png)
 
-Under the $5\text{ ps}$ condition, the measured exact match rate for input blocks ($q$) was 1.19%. The SHA-256 output bit match rate predicted from this value is 50.60%, which aligns closely with the 50.62% obtained in our simulation.
+*Figure 2. Experiment D: Match rates at a 32,000-bit lag as a function of jitter magnitude. Compares RO raw bits, exact match rates of 256-bit SHA-256 input blocks, and SHA-256 output bit match rates. Aggregated over 30 seeds (0 ps is deterministic); error bars indicate 95% confidence intervals. Note that this represents fixed-lag match rates, not predictor accuracy.*
 
-![Figure 2: Raw bit, block, and SHA-256 output recurrence versus jitter](../figures/fig2_block_recurrence_single.svg)
+Meanwhile, raw bits still matched at 92.52% at this lag. Frequent raw-bit matches can therefore coexist with almost chance-level hash-output matches.
 
-*Figure 2. Experiment D: Match rates at a 32,000-bit lag as a function of jitter magnitude. Compares RO raw bits, exact match rates of 256-bit SHA-256 input blocks, and SHA-256 output bit match rates. Aggregated over 30 seeds ($0\text{ ps}$ is deterministic); error bars indicate 95% confidence intervals. Note that this represents fixed-lag match rates, not predictor accuracy.*
-
-Under the same $5\text{ ps}$ condition, the lag match rate of the raw bits was 92.52%. Despite this high rate, the exact match rate for full 256-bit input blocks dropped to 1.19%, bringing the SHA-256 output bit match rate down to 50.62%. A high match rate in the raw bits and an approximately 50% match rate after hashing can coexist.
-
-Crucially, SHA-256 did not create a new physical source of randomness. Because any discrepancy within a block cascades across the entire digest, the regularity remaining in the raw bits simply becomes difficult to observe in the hashed output when viewed at the same lag. Note that what we are measuring here is the bit match rate at a fixed lag, not the upper bound of accuracy across all possible predictors.
+SHA-256 created no new physical entropy. It made the remaining raw-bit structure harder to observe at this particular lag. These match rates are descriptive statistics, not bounds on every possible predictor.
 
 ## Section 3 — What Happens When the Predictor Is Allowed to Search?
 
-If regularity still remains in the underlying raw bits, can we extract it?
+Could a predictor recover the structure without being told the theoretical periods of 2,000 and 32,000 bits? I tested this by allowing it to discover candidate lags from the training data.
 
-This is where the experiment gets truly interesting. Next, rather than giving the predictor theoretical periods like 2,000 or 32,000 in advance, we let it search the data on its own to find usable periods (lags).
+I split the time series chronologically into three parts:
+- **50% discovery:** search for candidate lags.
+- **20% validation:** choose among the candidates.
+- **30% test:** measure online prediction accuracy.
 
-To ensure a fair evaluation, we strictly partitioned the time-series data chronologically into three splits:
+Test data never enters lag discovery or validation. During online testing, previously observed test bits are available, but the current or future answers are not.
 
-- 50% Discovery: The split used to search for candidate useful lags.
-- 20% Validation: The split used to select the best lag from the candidates.
+Here is an abridged excerpt from [experiment_F.py](../experiments/experiment_F.py). It selects a lag using training and validation data, then uses the selected lag for online prediction. The full implementation handles the acceptance threshold and majority-class fallback.
 
-- 30% Test: The unseen split used to measure final prediction accuracy.
+```python
+candidates = discover_lag_candidates(bits[:DISCOVERY_CUT], max_lag, top_k)
+vi = np.arange(DISCOVERY_CUT, TRAIN_CUT)
+actual = bits[vi]
+base = float(np.mean(actual == majority(bits)))
+best = None
+for lag, strength in candidates:
+    agreement = float(np.mean(actual == bits[vi - lag]))
+    flip = agreement < 0.5
+    score = 1 - agreement if flip else agreement
+    item = (score, -lag, lag, flip, strength)
+    if best is None or item[:2] > best[:2]:
+        best = item
 
-The final test split is never used for lag discovery or selection. During testing, however, the predictor operates in an online sequential manner, meaning it can reference previously observed test bits prior to the bit currently being predicted. It never uses the current ground truth or future bits to make a prediction.
+decision = choose_lag(bits, max_lag, top_k, min_gain)
+t = np.arange(TRAIN_CUT, N)
+if decision["accept"]:
+    pred = bits[t - decision["lag"]] ^ np.uint8(decision["flip"])
+    blind = float(np.mean(pred == bits[t]))
+```
 
-Here are the results of applying this "lag-searching predictor" to three targets under the $5\text{ ps}$ jitter condition:
+The 5 ps test results are:
 
 **Table 1. Experiment F: Online blind-lag prediction at 5 ps**
 
@@ -118,41 +129,33 @@ Here are the results of applying this "lag-searching predictor" to three targets
 
 *Figure 3. Experiment F: Online next-bit prediction accuracy for RO raw bits (left) and SHA-256 output (right). Data was partitioned chronologically into 50% discovery, 20% validation, and 30% test, with lags selected exclusively using the discovery and validation splits. During testing, bits observed prior to the prediction step are accessible. Non-zero jitter conditions are aggregated over 12 seeds; error bars indicate 95% confidence intervals.*
 
-It is important to distinguish the evaluation conditions here. The ~50% figure in Section 1 was the accuracy of predicting the SHA-256 output using a fixed template. In contrast, the 99.60% figure here is the accuracy of online prediction on RO raw bits based on an unknown-lag search. These two numbers do not directly compare the superiority of predictors on the exact same dataset. Explicitly stating both the prediction target and the historical information available is a vital premise of this experiment.
+These numbers describe different tests: Section 1 used a fixed SHA-256 template; here the 99.60% result comes from an online raw-bit predictor with a discovered lag. They are not directly comparable scores for competing predictors on the same target.
 
-Even for the SHA-256 output, searching for lags was not entirely meaningless. Under the $2\text{ ps}$ condition in Experiment F, the mean accuracy of the unknown-lag search reached 53.38%, outperforming the 52.29% of the predictor pre-configured with a fixed 32,000 lag. The lag most frequently selected by the searcher was 15,616—which aligns with block boundaries as $15,616 = 61 \times 256$, and closely matches the phase as $15,616 \times 4.9505 = 77,307.008$. However, a difference of roughly 1.10 percentage points is not enough to claim definitive statistical superiority, and at $5\text{ ps}$, prediction accuracy on the SHA-256 output remains at 50.59%.
+At 2 ps, the SHA-256 lag search reached 53.38%, versus 52.29% for a prespecified lag of 32,000. Its most frequent choice, 15,616 = 61 × 256, aligns with block boundaries and corresponds to 15,616 × 4.9505 = 77,307.008 oscillator cycles. The 1.10-point gap alone is insufficient to establish statistical superiority. At 5 ps, the searched predictor scored 50.59%.
 
-Why, then, did RO raw bits achieve 99.60% accuracy even at $5\text{ ps}$? Let's examine the 101-lag selected at $5\text{ ps}$ and the inverted relationship at the 10-lag utilized under higher jitter conditions.
+Why could the raw-bit predictor still reach 99.60% at 5 ps? The answer lies in short approximate phase recurrences: lag 101 at 5 ps and an inverted lag 10 at higher jitter.
 
 ## Section 4 — Why a Short Imperfect Period Can Beat a Perfect Long One
 
-Why were approximate periods like lag 101 or lag 10 more useful than the exact theoretical period of lag 2,000? To answer this, we must consider both rational approximations of phase and the accumulation of noise.
+A short approximate recurrence can beat an exact but much longer period when noise accumulates with elapsed samples.
 
-Under the $5\text{ ps}$ condition, what the predictor discovered was not the exact theoretical period of 2,000, but a short approximate period at a lag of 101.
+At 5 ps, the predictor selected lag 101 instead of the exact 2,000-bit period.
 
-Because our oscillation-to-sampling frequency ratio is $4.9505$:
+For a frequency ratio of 4.9505:
 
-$$
-101 \times 4.9505 = 500.0005
-$$
+![Equation 3: Near phase recurrence at lag 101](../figures/eq3_lag101_recurrence.png)
 
-At a distance of 101 samples, the oscillator's phase returns almost exactly to its original position. Under higher jitter conditions of $20\text{–}50\text{ ps}$, the predictor exploited a different relationship:
+After 101 samples, the oscillator phase nearly returns to its starting point. At higher jitter (20–50 ps), lag 10 offered another relationship:
 
-$$
-10 \times 4.9505 = 49.505
-$$
+![Equation 4: Approximate half-cycle inversion at lag 10](../figures/eq4_lag10_inversion.png)
 
 A signal 10 samples away is shifted by almost exactly half a period. Therefore, by inverting the bit from 10 samples ago, the predictor can estimate the current bit with high accuracy.
 
-Why does a short approximate period hold an advantage over the exact period of 2,000?
+For lag L, the phase difference combines a deterministic offset δ_L and the noise accumulated over L steps:
 
-The phase difference at lag $L$ can be separated into a deterministic phase offset $\delta_L$ and the stochastic phase increments that accumulate over that interval:
+![Equation 5: Deterministic phase offset and accumulated random-walk jitter](../figures/eq5_phase_jitter.png)
 
-$$
-\Delta\phi_L = \delta_L + \sum_{k=n-L+1}^{n}\varepsilon_k, \qquad \sigma_{\Delta\phi}(L) = f_{\mathrm{RO}}\sigma_t\sqrt{L}
-$$
-
-Here, $\varepsilon_k$ represents the independent phase increment noise normalized to the oscillation period. In our model with a $50\text{ MHz}$ frequency and $5\text{ ps}$ jitter per step, this yields the following values:
+Here ε_k is independent phase-increment noise in oscillator-cycle units. At 50 MHz and 5 ps per step:
 
 **Table 2. Phase-offset and jitter comparison at 5 ps**
 
@@ -161,28 +164,22 @@ Here, $\varepsilon_k$ represents the independent phase increment noise normalize
 | 101 | 10 ps | approximately 50 ps |
 | 2,000 | 0 ps | approximately 224 ps |
 
-While a lag of 2,000 has zero deterministic phase offset, it accumulates substantially more noise than a lag of 101. Under the $5\text{ ps}$ condition in Experiment F, the unknown-lag search achieved 99.60% accuracy, whereas the pre-specified 2,000-lag predictor achieved 98.20%. This aligns with the trade-off between deterministic phase offset and noise accumulation. Note, however, that simply adding these two time values does not directly yield the bit error rate; phase wrapping and quantization thresholds also play a role.
+Lag 2,000 has no deterministic offset but accumulates more noise. At 5 ps, the discovered-lag predictor scored 99.60% versus 98.20% for the prespecified 2,000-lag predictor. This fits the phase-offset/noise trade-off, although bit errors also depend on phase wrapping and quantization thresholds.
 
-At $50\text{ ps}$, the raw-bit match rate at a 32,000 lag in Experiment D was 49.62%, whereas the unknown-lag online prediction accuracy in Experiment F was 98.50%. The former is a descriptive statistic at a fixed lag, while the latter is prediction accuracy under a different evaluation protocol. While the two metrics should not be conflated, they demonstrate how dramatically observable regularity can change depending on the lag and observation conditions.
+At 50 ps, Experiment D's 32,000-lag raw-bit match rate was 49.62%, while Experiment F's unknown-lag online prediction accuracy was 98.50%. These are distinct metrics and protocols, illustrating why the lag and information available to the predictor must be specified.
+
+This behavior is related to the role of sampling-frequency ratios and phase recurrence in coherent-sampling oscillator-based random number generators [3]. The present experiments use a separate synthetic model; they do not reproduce that paper's hardware results.
 
 ## Section 5 — Change the Noise Model, Change the Conclusion
 
-In the cumulative phase random walk model used thus far, the prediction accuracy of the SHA-256 output dropped to around 50%. However, this does not mean that passing a signal through SHA-256 will always result in 50% accuracy. Does the same thing happen if the temporal structure of the input changes? To find out, we varied the noise generation model. Keeping the frequency ratio at $4.9505$ and the jitter parameter at $5\text{ ps}$, we compared three different models of phase noise injection:
+So far, cumulative phase noise has driven SHA-256 prediction toward 50%. I next compared three noise processes at ratio 4.9505 and a 5 ps model setting:
+- **Cumulative random walk:** independent phase increments accumulate.
+- **AR(1) phase increments:** strongly correlated increments (ρ = 0.90) accumulate.
+- **Independent phase perturbations:** phase offsets are independently resampled without accumulation.
 
-- Cumulative Phase Random Walk: Deviations accumulate continuously over time (used in the experiments so far).
-- AR(1) Phase Increment: An accumulative model where the step-to-step deviations have slight temporal correlation.
+The numerical setting of 5 ps does **not** represent equal physical noise power across the three models. This experiment tests sensitivity to temporal noise structure, not equal-strength noise sources.
 
-- Independent Phase Perturbation: Deviations are reset at each step and do not accumulate over time.
-
-It is important to note here that the numerical setting of "$5\text{ ps}$" assigned to the three noise models does not represent physically equivalent noise power across them.
-
-In a cumulative random walk, fluctuations in phase increments pile up over time. In the AR(1) model, those increments are temporally correlated. In the independent phase perturbation model, however, the phase deviation at each sample is drawn independently, and past deviations never accumulate.
-
-Therefore, this comparison is not "an experiment applying three types of noise of equal strength," but rather "a sensitivity analysis assuming different temporal noise-generation processes."
-
-With this distinction in mind, we compared post-SHA-256 prediction performance across the noise models. Below are the results from Experiment G using a frequency ratio of $4.9505$, jitter of $5\text{ ps}$, and 6 seeds. Unlike Experiment F (12 seeds, 50% discovery / 20% validation), Experiment G uses a discovery budget of 192,000 bits, validation of 40,000 bits, and a final test split of 30%. Consequently, the 50.59% in F and 50.50% in G are not identical estimators, nor do the 32,000-lag match rates in Experiment D directly match the descriptive statistics from G's separate seeds.
-
-The results are as follows:
+Experiment G used six seeds, a 192,000-bit discovery budget, 40,000 validation bits, and a final 30% test split. These differ from Experiment F's protocol, so its 50.59% and Experiment G's 50.50% should not be treated as the same estimate.
 
 **Table 3. Experiment G: Prediction accuracy at 5 ps and ratio 4.9505**
 
@@ -192,11 +189,11 @@ The results are as follows:
 | AR(1) phase increments | 99.01% | **50.02%** |
 | Independent phase perturbations | 99.94% | **92.50%** |
 
-![Figure 4: Online prediction accuracy across phase-noise models](../figures/fig4_source_model_sensitivity_revised.svg)
+![Figure 4: Online prediction accuracy across phase-noise models](../figures/fig4_tds.png)
 
-*Figure 4. Experiment G: Comparison of three phase noise models and online next-bit prediction accuracy at a frequency ratio of $4.9505$ and jitter setting of $5\text{ ps}$. Blue bars represent RO raw bits; orange bars represent SHA-256 outputs. Values are means across 6 seeds; error bars indicate 95% confidence intervals. A numerical setting of $5\text{ ps}$ does not imply physically equivalent noise strength across models.*
+*Figure 4. Experiment G: Comparison of three phase noise models and online next-bit prediction accuracy at a frequency ratio of 4.9505 and jitter setting of 5 ps. Blue bars represent RO raw bits; orange bars represent SHA-256 outputs. Values are means across 6 seeds; error bars indicate 95% confidence intervals. The nominal jitter setting is not physically equivalent across models.*
 
-Under the independent phase perturbation model, prediction accuracy on the SHA-256 output reached 92.50%. However, this does not mean this model always yields high accuracy. Let's compare the results of Experiment G across different frequency ratios:
+Independent phase perturbations produced 92.50% SHA-256 prediction accuracy at ratio 4.9505. Varying the ratio changes the result:
 
 **Table 4. Experiment G: SHA-256 prediction with independent phase perturbations at 5 ps**
 
@@ -207,63 +204,52 @@ Under the independent phase perturbation model, prediction accuracy on the SHA-2
 | approximately 4.618034 | **57.01%** |
 | 4.917321 | **50.15%** |
 
-The $\approx 4.953328$ condition is an irrational ratio defined in our implementation as $4.9505 + 0.002\sqrt{2}$. Even so, it achieved an accuracy of 89.04%. An exact rational ratio is not strictly required. Within the scope of our experiment, what matters is whether a good approximate period aligned with 256-bit block boundaries exists within the search range, and how reliably it is reproduced under noise. This connects directly back to the number-theoretic phase relationships discussed in Section 4.
+The ratio near 4.953328 is defined as 4.9505 + 0.002√2, which is irrational, yet gives 89.04% accuracy. In contrast, 4.917321 is rational (4,917,321/1,000,000) but gives only 50.15%. Thus, rationality itself is not the deciding factor. In these experiments, the relevant question is whether the lag search finds a useful approximate recurrence aligned to 256-bit block boundaries and whether that recurrence survives the chosen noise process.
 
-![Figure 5: Sampling-ratio and phase-noise model sensitivity in raw and hashed bits](../figures/fig5_ratio_model_sensitivity_clean.svg)
+![Figure 5: Sampling-ratio and phase-noise model sensitivity in raw and hashed bits](../figures/fig5_tds.png)
 
-*Figure 5. Experiment G: Online next-bit prediction accuracy across four frequency ratios and three phase noise models at a $5\text{ ps}$ jitter setting. Left panel shows RO raw bits; right panel shows SHA-256 outputs. Each cell represents the 6-seed mean (darker shades indicate higher accuracy), evaluated using 192,000 discovery bits, 40,000 validation bits, and a 30% final test split. Frequency ratios "4.953328\*" and "4.618034\*" are rounded displays of $4.9505 + 0.002\sqrt{2}$ and $4 + (\sqrt{5}-1)/2$, respectively. The $5\text{ ps}$ value does not imply physically equivalent noise strength across models.*
+*Figure 5. Experiment G: Online next-bit prediction accuracy across four frequency ratios and three phase noise models at a 5 ps jitter setting. Left panel shows RO raw bits; right panel shows SHA-256 outputs. Each cell represents the 6-seed mean (darker shades indicate higher accuracy), evaluated using 192,000 discovery bits, 40,000 validation bits, and a 30% final test split. Frequency ratios "4.953328*" and "4.618034*" are rounded displays of 4.9505 + 0.002√2 and 4 + (√5 − 1)/2, respectively. The 5 ps value does not imply physically equivalent noise strength across models.*
 
-Why does this happen? Because phase deviations do not accumulate in the independent phase perturbation model, input blocks are much more likely to be reproduced even at distant points in time. Under this model, the exact match rate for 256-bit blocks at a 32,000-bit lag was approximately 84.96%. This explains the mechanism by which a high match rate survives in the SHA-256 output—though note that this block match rate and the 92.50% online prediction accuracy in the table are distinct evaluation metrics.
+Independent phase offsets do not accumulate. At ratio 4.9505, 256-bit input blocks exactly matched 84.96% of the time at lag 32,000, allowing substantial hash-output recurrence. That descriptive block-match rate is distinct from the 92.50% online prediction accuracy.
 
-In actual free-running ring oscillators, phase noise often accumulates from frequency fluctuations, and RO-based TRNGs are specifically designed to harvest such physical jitter as an entropy source. However, real hardware is also subject to power supply variations, temperature drift, and correlated noise, meaning our simple random walk model does not fully represent physical silicon. Similarly, the independent phase perturbation model serves as a control for comparison and is not a general model of PLL clocks.
+RO-based true random number generators can use physical oscillator jitter as an entropy source [2]. Real circuits also exhibit supply variation, temperature drift, and correlated noise; the synthetic random walk does not model all of these effects. Independent phase offsets serve only as a comparison model, not a description of PLL clocks.
 
 What Experiment G demonstrates is that even with the exact same SHA-256 function, the predictability of the output depends heavily on the combination of the phase noise's temporal structure and the sampling ratio. The 92.50% figure is simply the outcome obtained under one specific combination of those conditions.
 
 ## Section 6 — What a Failed Prediction Test Actually Tells Us
 
-Through the experiments above, we are finally equipped to answer the overarching question posed at the beginning. When we run a prediction test on a signal and get a result of "50% (prediction failure)," what does that actually mean?
+What does a prediction score near 50% actually tell us?
 
-Low prediction accuracy merely demonstrates that under the given information, algorithm, and observation conditions, that specific predictor failed to achieve sufficient accuracy.
+It says that a particular predictor failed under a particular information and evaluation protocol.
 
 It does not prove any of the following:
-
-- That all regularity and information in the underlying data-generation process have been lost.
-- That a predictor taking a different approach could never predict the signal.
-
-- Much less that the output is "cryptographically secure" or "possesses sufficient true entropy."
+- That the generating process has lost all regularity.
+- That a different predictor could never succeed.
+- That the output is cryptographically secure or has sufficient entropy; entropy assessment requires separate evidence and procedures [1].
 
 (Note: All experiments in this study are based on synthetic RO models and are not measurements from physical devices. Furthermore, the fixed-template prediction in Section 1, the simple match rates in Section 2, and the online predictions in Sections 3 and 5 were each designed under different evaluation conditions. For detailed implementations, confidence intervals, per-seed results, and additional model comparisons, please refer to the GitHub repository linked at the end of this article.)
 
-When evaluating data randomness or predictability in practice, we must always explicitly specify the following five-point checklist to avoid being misled by a single accuracy score:
-
-1. What is being predicted? (Is it the raw signal itself, or the output after transformation by a hash function or conditioner?)
-2. What historical information can the predictor access? (Is it restricted to a fixed template, or does it update sequentially online?)
-
-3. Were features or periods given in advance? (Was it fed theoretical values, or allowed to search and discover them from the data?)
-4. What assumptions are made about the noise and data-generation process? (Does the noise accumulate over time, or is it independent?)
-
-5. What dependencies were checked beyond prediction accuracy? (What do the match rates look like across multiple lags or at the block level?)
+I use five questions to interpret a prediction result:
+1. **Target:** raw signal or conditioned output?
+2. **Information:** fixed template or online access to observed history?
+3. **Lag selection:** prespecified or learned from training data?
+4. **Noise:** accumulated, correlated, or independently resampled?
+5. **Other tests:** what do block matches and lagged correlations reveal?
 
 ## Closing — Randomness Is Not a Single Number
 
-Think back once more to the "two histograms" from the opening.
+The opening sequences had identical histograms but different test accuracies: 100.00% and 1.34%. Their order, not their marginal distribution, made the difference.
 
-The two sequences shared the exact same distribution (histogram). Yet, because their order differed, their future predictability diverged starkly between 100% and 1.34%.
+The same distinction appears after SHA-256: with cumulative phase noise, a predictor found 99.60% accuracy on raw bits despite chance-level hash-output performance; under a different noise model and sampling ratio, even hashed bits reached 92.50%. These results apply only to the stated synthetic models and prediction protocols.
 
-Similarly, even if a given predictor achieves only 50% accuracy on the output of SHA-256, it does not guarantee that no predictable structure remains in the underlying signal. In our random walk model, we were able to predict the raw bits with 99.60% accuracy by exploiting a short approximate period. And under a specific combination of independent phase perturbation and frequency ratio, we achieved 92.50% prediction accuracy even on the SHA-256 output itself. Both results are valid within their specified models and prediction protocols.
+SHA-256 can obscure a specific recurrence without proving that the source is unpredictable.
 
-Perhaps the most striking takeaway from these experiments is that while SHA-256 obscured periodic matches, that result alone said almost nothing about the predictability of the underlying source signal.
-
-Randomness and unpredictability cannot be judged by a single number from a single test.
-
-Prediction accuracy describes a particular experiment. It is not a universal certificate of randomness.
+**Prediction accuracy is a property of a particular test, not a certificate of randomness.**
 
 ## References and Reproducibility
-
-- [1] NIST, Recommendation for the Entropy Sources Used for Random Bit Generation, NIST SP 800-90B (2018). https://doi.org/10.6028/NIST.SP.800-90B
-- [2] M. Baudet, D. Lubicz, J. Micolod, A. Tassiaux, On the Security of Oscillator-Based Random Number Generators, Journal of Cryptology 24, 398–425 (2011). https://doi.org/10.1007/s00145-010-9089-3
-
-- [3] A. Peetermans, V. Rožić, I. Verbauwhede, Design and Analysis of Configurable Ring Oscillators for True Random Number Generation Based on Coherent Sampling, ACM Transactions on Reconfigurable Technology and Systems (2021). https://doi.org/10.1145/3433166
+- [1] NIST, *Recommendation for the Entropy Sources Used for Random Bit Generation* (2018), NIST SP 800-90B. https://doi.org/10.6028/NIST.SP.800-90B
+- [2] M. Baudet, D. Lubicz, J. Micolod, A. Tassiaux, *On the Security of Oscillator-Based Random Number Generators* (2011), Journal of Cryptology 24, 398–425. https://doi.org/10.1007/s00145-010-9089-3
+- [3] A. Peetermans, V. Rožić, I. Verbauwhede, *Design and Analysis of Configurable Ring Oscillators for True Random Number Generation Based on Coherent Sampling* (2021), ACM Transactions on Reconfigurable Technology and Systems. https://doi.org/10.1145/3433166
 
 Figure 5 can be recreated from the [Experiment G summary CSV](../data/experiment_G_highlights.csv) using the [Python regeneration script](../experiments/plot_G_ratio_sensitivity.py).
 
