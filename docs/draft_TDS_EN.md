@@ -182,38 +182,61 @@ Understanding why this shorter, imperfect period performed better requires looki
 
 ## Section 4: Why a Short Imperfect Period Can Beat a Perfect Long One
 
-A short approximate recurrence can beat an exact but much longer period when noise accumulates with elapsed samples.
+In the previous experiment, the predictor achieved 99.60% accuracy by looking just 101 samples into the past.
 
-At 5 ps, the predictor selected lag 101 instead of the exact 2,000-bit period.
+But why did it choose 101 samples instead of the exact repetition period of 2,000?
 
-For a frequency ratio of 4.9505:
+To understand this, consider what happens when a ring oscillator is sampled repeatedly.
+
+If the oscillator returns to nearly the same point in its cycle, the sampled bit is likely to repeat. The number of samples between two observations is called the *lag*.
+
+Without noise, waiting exactly 2,000 samples reproduces the original pattern perfectly.
+
+However, in the cumulative phase-noise model, small timing errors build up over successive samples. A longer interval may provide better theoretical phase alignment, but it also allows more uncertainty to accumulate.
+
+This creates a trade-off between two factors:
+
+- **Phase alignment:** How closely the oscillator returns to the same point in its cycle.
+- **Accumulated jitter:** How much timing uncertainty builds up between two observations.
+
+A shorter, slightly imperfect recurrence can therefore be more useful for prediction than a longer, theoretically exact one.
+
+At an oscillation-to-sampling frequency ratio of 4.9505, the oscillator completes almost exactly 500 cycles over 101 sampling intervals:
 
 ![Equation 3: Near phase recurrence at lag 101](../figures/eq3_lag101_recurrence.png)
 
-After 101 samples, the oscillator phase nearly returns to its starting point. At higher jitter (20–50 ps), lag 10 offered another relationship:
+The remaining phase offset is only 0.0005 cycles, equivalent to 10 ps at 50 MHz.
+
+At higher jitter settings (20–50 ps), the predictor instead exploited another short relationship:
 
 ![Equation 4: Approximate half-cycle inversion at lag 10](../figures/eq4_lag10_inversion.png)
 
-A signal 10 samples away is shifted by almost exactly half a period. Therefore, by inverting the bit from 10 samples ago, the predictor can estimate the current bit with high accuracy.
+After 10 samples, the oscillator is almost half a cycle out of phase. Inverting the bit observed 10 samples earlier can therefore produce a useful prediction.
 
-For lag L, the phase difference combines a deterministic offset δ_L and the noise accumulated over L steps:
+The accumulated noise explains why these short lags can work so well. In the cumulative phase random-walk model, the phase difference at lag L has a deterministic offset and a stochastic contribution:
 
 ![Equation 5: Deterministic phase offset and accumulated random-walk jitter](../figures/eq5_phase_jitter.png)
 
-Here ε_k is independent phase-increment noise in oscillator-cycle units. At 50 MHz and 5 ps per step:
+Here, the individual phase-increment errors ε_k are independent. Their accumulated timing uncertainty grows in proportion to the square root of the lag.
 
-**Table 2. Phase-offset and jitter comparison at 5 ps**
+At 5 ps of jitter per sampling step:
 
-| Lag (samples) | Deterministic phase offset (time equivalent) | Accumulated jitter, standard deviation (time equivalent) |
-|--:|--:|--:|
+**Table 2. Phase alignment and accumulated jitter**
+
+| Lag (samples) | Deterministic phase offset | Accumulated jitter (standard deviation) |
+|---:|---:|---:|
 | 101 | 10 ps | approximately 50 ps |
 | 2,000 | 0 ps | approximately 224 ps |
 
-Lag 2,000 has no deterministic offset but accumulates more noise. At 5 ps, the discovered-lag predictor scored 99.60% versus 98.20% for the prespecified 2,000-lag predictor. This fits the phase-offset/noise trade-off, although bit errors also depend on phase wrapping and quantization thresholds.
+Lag 2,000 is perfectly aligned in the noiseless model, but its timing uncertainty is more than four times larger than that of lag 101.
 
-At 50 ps, Experiment D's 32,000-lag raw-bit match rate was 49.62%, while Experiment F's unknown-lag online prediction accuracy was 98.50%. These are distinct metrics and protocols, illustrating why the lag and information available to the predictor must be specified.
+At 5 ps, Experiment F achieved **99.60%** test accuracy with the discovered lag, compared with **98.20%** for the prespecified 2,000-sample lag. This is consistent with the phase-alignment and noise-accumulation trade-off.
 
-This behavior is related to the role of sampling-frequency ratios and phase recurrence in coherent-sampling oscillator-based random number generators [3]. The present experiments use a separate synthetic model; they do not reproduce that paper's hardware results.
+These phase-offset and jitter values do not directly determine the bit error rate. Phase wrapping and the threshold used to sample a binary bit also matter.
+
+The choice of lag matters even more at higher jitter. At 50 ps, Experiment D measured **49.62%** raw-bit agreement at a fixed lag of 32,000, while Experiment F achieved **98.50%** online prediction accuracy after searching for a useful lag. The former is a fixed-lag match rate; the latter is a prediction score from a different evaluation protocol. They must not be treated as two competing prediction accuracies.
+
+Related phase-recurrence ideas also appear in work on coherent-sampling oscillator-based random number generators [3]. The experiments presented here use a separate synthetic model and do not reproduce that paper's hardware measurements.
 
 ## Section 5: Change the Noise Model, Change the Conclusion
 
