@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 300" role="img" aria-label="Experiment G accuracy by sampling frequency ratio and noise model">
+<rect width="1120" height="300" fill="#ffffff"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#202733">
+<text x="315" y="34" text-anchor="middle" font-size="18" font-weight="bold">Raw oscillator bits</text>
+<text x="191" y="62" text-anchor="middle" font-size="13" fill="#475569">4.9505</text>
+<text x="273" y="62" text-anchor="middle" font-size="13" fill="#475569">4.953328*</text>
+<text x="355" y="62" text-anchor="middle" font-size="13" fill="#475569">4.917321</text>
+<text x="437" y="62" text-anchor="middle" font-size="13" fill="#475569">4.618034*</text>
+<text x="138" y="110" text-anchor="end" font-size="13.5" fill="#334155">Random walk</text>
+<rect x="155" y="80" width="72" height="46" fill="#245e8a" rx="3"/>
+<text x="191" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.60%</text>
+<rect x="237" y="80" width="72" height="46" fill="#235e8a" rx="3"/>
+<text x="273" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.64%</text>
+<rect x="319" y="80" width="72" height="46" fill="#245e8a" rx="3"/>
+<text x="355" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.54%</text>
+<rect x="401" y="80" width="72" height="46" fill="#245e8a" rx="3"/>
+<text x="437" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.56%</text>
+<text x="138" y="170" text-anchor="end" font-size="13.5" fill="#334155">AR(1) increments</text>
+<rect x="155" y="140" width="72" height="46" fill="#26608b" rx="3"/>
+<text x="191" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.01%</text>
+<rect x="237" y="140" width="72" height="46" fill="#28618c" rx="3"/>
+<text x="273" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">98.60%</text>
+<rect x="319" y="140" width="72" height="46" fill="#255f8b" rx="3"/>
+<text x="355" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.22%</text>
+<rect x="401" y="140" width="72" height="46" fill="#27618c" rx="3"/>
+<text x="437" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">98.68%</text>
+<text x="138" y="230" text-anchor="end" font-size="13.5" fill="#334155">IID phase</text>
+<rect x="155" y="200" width="72" height="46" fill="#225d89" rx="3"/>
+<text x="191" y="229" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.94%</text>
+<rect x="237" y="200" width="72" height="46" fill="#225d89" rx="3"/>
+<text x="273" y="229" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.94%</text>
+<rect x="319" y="200" width="72" height="46" fill="#225d89" rx="3"/>
+<text x="355" y="229" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.94%</text>
+<rect x="401" y="200" width="72" height="46" fill="#225d89" rx="3"/>
+<text x="437" y="229" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">99.94%</text>
+<text x="800" y="34" text-anchor="middle" font-size="18" font-weight="bold">SHA-256 output bits</text>
+<text x="676" y="62" text-anchor="middle" font-size="13" fill="#475569">4.9505</text>
+<text x="758" y="62" text-anchor="middle" font-size="13" fill="#475569">4.953328*</text>
+<text x="840" y="62" text-anchor="middle" font-size="13" fill="#475569">4.917321</text>
+<text x="922" y="62" text-anchor="middle" font-size="13" fill="#475569">4.618034*</text>
+<rect x="640" y="80" width="72" height="46" fill="#e9f1f7" rx="3"/>
+<text x="676" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.49%</text>
+<rect x="722" y="80" width="72" height="46" fill="#e7eff6" rx="3"/>
+<text x="758" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.90%</text>
+<rect x="804" y="80" width="72" height="46" fill="#e2ecf3" rx="3"/>
+<text x="840" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">52.18%</text>
+<rect x="886" y="80" width="72" height="46" fill="#e8eff6" rx="3"/>
+<text x="922" y="109" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.85%</text>
+<rect x="640" y="140" width="72" height="46" fill="#ebf2f8" rx="3"/>
+<text x="676" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.02%</text>
+<rect x="722" y="140" width="72" height="46" fill="#ebf2f8" rx="3"/>
+<text x="758" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">49.97%</text>
+<rect x="804" y="140" width="72" height="46" fill="#eaf1f8" rx="3"/>
+<text x="840" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.19%</text>
+<rect x="886" y="140" width="72" height="46" fill="#ebf2f8" rx="3"/>
+<text x="922" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">49.95%</text>
+<rect x="640" y="200" width="72" height="46" fill="#40739a" rx="3"/>
+<text x="676" y="229" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">92.50%</text>
+<rect x="722" y="200" width="72" height="46" fill="#4e7ea1" rx="3"/>
+<text x="758" y="229" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">89.04%</text>
+<rect x="804" y="200" width="72" height="46" fill="#eaf2f8" rx="3"/>
+<text x="840" y="229" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">50.15%</text>
+<rect x="886" y="200" width="72" height="46" fill="#cfdde8" rx="3"/>
+<text x="922" y="229" text-anchor="middle" font-size="14" font-weight="bold" fill="#20364a">57.01%</text>
+</g>
+</svg>
