@@ -1,30 +1,33 @@
 # Two Identical Histograms. Two Very Different Futures.
 
-Why a failed prediction test does not prove a signal is unpredictable.
+*Why a failed prediction test does not prove a signal is unpredictable.*
 
 ## Opening: Two Identical Histograms
 
-Imagine you have two sequences in front of you, each consisting of 74,160 integers ranging from 0 to 99.
+Imagine two sequences, each containing 74,160 integers ranging from 0 to 99.
 
-First, you count the frequency of each number in both sequences and plot their histograms. The two histograms are identical, bin for bin. Every number appears exactly the same number of times in both sequences.
+Their histograms are identical, bin for bin. Every number appears exactly as often in one sequence as in the other.
 
-But can you predict which number comes next in each sequence?
+But can we predict which number comes next?
 
-I used a simple periodicity-based predictor and evaluated its first-guess accuracy on a held-out test segment. The results were striking:
-- Sequence 1 prediction accuracy: **100.00%**
-- Sequence 2 prediction accuracy: **1.34%** (close to the 1% chance level for 100 possible values)
+To find out, I tested a simple periodicity-based predictor on a held-out test segment. The results were striking:
 
-![Figure 1: Identical histograms of ordered and shuffled sequences with contrasting test accuracy](../figures/fig1_tds.png)
+- **Sequence 1: 100.00%** prediction accuracy
+- **Sequence 2: 1.34%** prediction accuracy (close to the 1% chance level for uniform guesses among 100 values)
 
-*Figure 1. Experiment A: An original sequence and its fully shuffled counterpart share identical occurrence counts across 74,160 integers. The top panel shows their shared empirical histogram; the bottom panel shows first-guess accuracy on a chronologically held-out test segment. Accuracy was 100.00% for the original order and 1.34% after shuffling.*
+![Figure 1: Identical histograms of ordered and shuffled sequences](../figures/fig1_tds.png)
+
+*Figure 1. Experiment A: The original sequence and its shuffled counterpart have identical empirical histograms. However, a periodicity-based predictor achieves 100.00% first-guess accuracy on the original sequence and 1.34% after shuffling, evaluated on held-out test data.*
 
 If the two sequences have identical distributions, why is one so much easier to predict?
 
-Once you know the trick, it is simple: one sequence is arranged in a regular, periodic order, while the other is a completely shuffled version of it.
+The difference lies in their order. The first sequence contains a repeating pattern, while the second is obtained by shuffling exactly the same values. The shuffle preserves the histogram but disrupts the temporal structure exploited by this predictor.
 
-A histogram shows the marginal distribution (which values appear and how frequently), but not the temporal dependence between successive values. That is where the sequence's "memory of order" can hide.
+A histogram describes the marginal distribution: which values appear and how frequently. It tells us nothing about the temporal dependence between successive values.
 
-This is more than a statistical puzzle. The same distinction matters when evaluating random number generators, sensor signals, and cryptographic hash outputs. An output that looks random does not, by itself, establish that the underlying signal is unpredictable.
+This distinction matters beyond a simple statistical puzzle. The same issue arises when evaluating random number generators, sensor signals, and cryptographic hash outputs.
+
+**An output that looks random does not necessarily come from an unpredictable source.**
 
 ## Section 1: A Random-Looking Output Can Still Have a Memory
 
