@@ -13,7 +13,7 @@ But can we predict which number comes next?
 To find out, I tested a simple periodicity-based predictor on a held-out test segment. The results were striking:
 
 - **Sequence 1: 100.00%** prediction accuracy
-- **Sequence 2: 1.34%** prediction accuracy (close to the 1% chance level for uniform guesses among 100 values)
+- **Sequence 2: 1.34%** prediction accuracy (comparable to the 1.33% frequency-only baseline)
 
 ![Figure 1: Identical histograms of ordered and shuffled sequences](../figures/fig1_tds.png)
 
