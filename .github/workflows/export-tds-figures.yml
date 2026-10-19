@@ -1,0 +1,39 @@
+name: Export TDS publication PNGs
+
+on:
+  push:
+    paths:
+      - 'scripts/export_tds_png.py'
+      - 'figures/*.svg'
+      - '.github/workflows/export-tds-figures.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  png-assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install rendering dependencies
+        run: python -m pip install --disable-pip-version-check cairosvg matplotlib
+      - name: Export approved figures and five equations
+        run: python scripts/export_tds_png.py
+      - name: Commit generated PNGs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add figures/fig1_tds.png figures/fig2_tds.png figures/fig4_tds.png figures/fig5_tds.png figures/eq*.png
+          if ! git diff --cached --quiet; then
+            git commit -m "Add high-resolution TDS figures and equation PNG assets"
+            git push
+          fi
