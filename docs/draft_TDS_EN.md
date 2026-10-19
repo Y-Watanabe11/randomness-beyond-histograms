@@ -106,60 +106,79 @@ That distinction leads to the next experiment: what happens if the predictor is 
 
 ## Section 3: What Happens When the Predictor Is Allowed to Search?
 
-Could a predictor recover the structure without being told the theoretical periods of 2,000 and 32,000 bits? I tested this by allowing it to discover candidate lags from the training data.
+The previous experiment measured agreement at a fixed lag of 32,000 bits. But what if the predictor could search for a more useful lag on its own?
 
-I split the time series chronologically into three parts:
-- **50% discovery:** search for candidate lags.
-- **20% validation:** choose among the candidates.
-- **30% test:** measure online prediction accuracy.
+To test this, I designed a predictor that discovers repeating patterns without being given the theoretical periods of 2,000 or 32,000 bits.
 
-Test data never enters lag discovery or validation. During online testing, previously observed test bits are available, but the current or future answers are not.
+I divided each bitstream chronologically into three parts:
 
-Here is an abridged excerpt from [experiment_F.py](../experiments/experiment_F.py). It selects a lag using training and validation data, then uses the selected lag for online prediction. The full implementation handles the acceptance threshold and majority-class fallback.
+- **Discovery (50%):** Search for candidate lags using autocorrelation.
+- **Validation (20%):** Select the most accurate lag and determine whether the previous bit should be inverted.
+- **Test (30%):** Evaluate the selected predictor on held-out data.
+
+The predictor searches lags from 1 to 40,000 and evaluates the 64 strongest candidates on the validation segment. Its choice is fixed before testing begins.
+
+During the test, it predicts each new bit using previously observed bits. This is **online next-bit prediction**, not a forecast of an entire unseen sequence. Earlier test bits may be used once they have been observed, but the current and future bits are never available in advance.
+
+The following simplified code illustrates the core idea.
 
 ```python
-candidates = discover_lag_candidates(bits[:DISCOVERY_CUT], max_lag, top_k)
+# Simplified from experiment_F.py
+candidates = discover_lag_candidates(
+    bits[:DISCOVERY_CUT], max_lag, top_k
+)
 vi = np.arange(DISCOVERY_CUT, TRAIN_CUT)
-actual = bits[vi]
-base = float(np.mean(actual == majority(bits)))
 best = None
-for lag, strength in candidates:
-    agreement = float(np.mean(actual == bits[vi - lag]))
+
+for lag, _ in candidates:
+    agreement = float(np.mean(bits[vi] == bits[vi - lag]))
     flip = agreement < 0.5
     score = 1 - agreement if flip else agreement
-    item = (score, -lag, lag, flip, strength)
-    if best is None or item[:2] > best[:2]:
-        best = item
-score, _, lag, flip, strength = best
-accept = bool(score - base >= min_gain)
+    candidate = (score, -lag, lag, flip)
+    if best is None or candidate[:2] > best[:2]:
+        best = candidate
 
-# In evaluate(), choose_lag returns this decision before testing.
-decision = choose_lag(bits, max_lag, top_k, min_gain)
+_, _, lag, flip = best
 t = np.arange(TRAIN_CUT, N)
-if decision["accept"]:
-    pred = bits[t - decision["lag"]] ^ np.uint8(decision["flip"])
-    blind = float(np.mean(pred == bits[t]))
+pred = bits[t - lag] ^ np.uint8(flip)
+test_accuracy = float(np.mean(pred == bits[t]))
 ```
 
-The 5 ps test results are:
+*For clarity, this excerpt omits the full implementation's minimum validation-gain requirement and majority-class fallback. The complete code is available in [experiment_F.py](../experiments/experiment_F.py).*
 
-**Table 1. Experiment F: Online blind-lag prediction at 5 ps**
+At **5 ps of synthetic jitter**, the results were:
 
-| Prediction target | Online test accuracy |
-|:--|--:|
-| **RO raw bits** | **99.60%** |
-| SHA-256 output | 50.59% |
+**Table 1. Experiment F: Online prediction accuracy at 5 ps**
+
+| Prediction target | Test accuracy |
+|---|---:|
+| **Raw oscillator bits** | **99.60%** |
+| SHA-256 output bits | 50.59% |
 | Shuffled raw-bit control | 49.96% |
 
-![Figure 3: Online prediction performance of raw bits and SHA-256 output](../figures/fig3_blind_prediction.png)
+![Figure 3: Online prediction accuracy of raw oscillator bits and SHA-256 output](../figures/fig3_blind_prediction.png)
 
-*Figure 3. Experiment F: Online next-bit prediction accuracy for RO raw bits (left) and SHA-256 output (right). Data was partitioned chronologically into 50% discovery, 20% validation, and 30% test, with lags selected exclusively using the discovery and validation splits. During testing, bits observed prior to the prediction step are accessible. Non-zero jitter conditions are aggregated over 12 seeds; error bars indicate 95% confidence intervals.*
+*Figure 3. Experiment F: Online next-bit prediction accuracy across synthetic jitter settings. The left panel shows raw oscillator bits; the right panel shows SHA-256 output bits. Discovered-lag prediction is compared with prespecified-lag and first-order Markov baselines. Nonzero-jitter results are averaged over 12 seeds, with 95% confidence intervals.*
 
-These numbers describe different tests: Section 1 used a fixed SHA-256 template; here the 99.60% result comes from an online raw-bit predictor with a discovered lag. They are not directly comparable scores for competing predictors on the same target.
+The difference is striking. The predictor achieved **99.60% accuracy on the raw oscillator bits**, even without knowing their theoretical period. Yet its accuracy on the SHA-256 output remained close to 50%.
 
-At 2 ps, the SHA-256 lag search reached 53.38%, versus 52.29% for a prespecified lag of 32,000. Its most frequent choice, 15,616 = 61 × 256, aligns with block boundaries and corresponds to 15,616 × 4.9505 = 77,307.008 oscillator cycles. The 1.10-point gap alone is insufficient to establish statistical superiority. At 5 ps, the searched predictor scored 50.59%.
+These results describe two different prediction targets under the same online evaluation protocol. They do not establish that the SHA-256 output is unpredictable to every possible method. They also differ from the fixed-template experiment in Section 1.
 
-Why could the raw-bit predictor still reach 99.60% at 5 ps? The answer lies in short approximate phase recurrences: lag 101 at 5 ps and an inverted lag 10 at higher jitter.
+There is another interesting result.
+
+At **2 ps**, the SHA-256 predictor achieved 53.38% accuracy, compared with 52.29% when the lag was fixed at 32,000. The most frequently selected lag was 15,616.
+
+This lag is divisible by 256, aligning with the hash input-block boundaries. It also nearly reproduces the oscillator phase:
+
+15,616 × 4.9505 = 77,307.008
+
+However, the 1.10-percentage-point difference alone is not enough to establish statistical superiority.
+
+The main result is that the raw oscillator bits remained highly predictable, even when the SHA-256 output did not reveal a useful pattern to this predictor.
+
+Why? At 5 ps, the predictor discovered a short recurrence at **lag 101**, rather than using the exact theoretical period of 2,000 bits.
+
+Understanding why this shorter, imperfect period performed better requires looking at how phase error accumulates over time.
 
 ## Section 4: Why a Short Imperfect Period Can Beat a Perfect Long One
 
