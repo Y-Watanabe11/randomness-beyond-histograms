@@ -31,29 +31,34 @@ This distinction matters beyond a simple statistical puzzle. The same issue aris
 
 ## Section 1: A Random-Looking Output Can Still Have a Memory
 
-A number-guessing game is a familiar exercise for people learning Python. While teaching programming to elementary school students as a part-time job, I decided to build one myself and experimented with different implementations.
+A number-guessing game is a familiar exercise for people learning Python. While teaching programming to elementary school students as a part-time job, I decided to build one myself and experiment with different implementations.
 
-Since my research focuses on analog semiconductor circuit design, I gradually began building games that combined software with hardware. Along the way, my interest expanded into how random numbers are generated. While building and testing several random number generators, I stumbled upon the phenomenon presented in this article.
+My research focuses on analog semiconductor circuit design, so I also began building games that combined software with hardware. This led me to explore different ways of generating random numbers.
 
-What particularly intrigued me was how the regularity in an original sequence changes when passed through SHA-256.
+One question caught my attention: **What happens to the regularity of a bit sequence after it passes through SHA-256?**
 
-To investigate this question, I used a synthetic model of a ring oscillator (RO), a circuit commonly used in hardware random number generators.
+To investigate, I used a synthetic model of a ring oscillator (RO), a circuit commonly used in hardware random number generators.
 
-I set the oscillation frequency to f_RO = 50 MHz (a period of 20 ns) and the oscillation-to-sampling frequency ratio to r = 4.9505 (a sampling frequency of approximately 10.10 MHz). In this experiment, a "jitter of 5 ps" refers to σ_t, the standard deviation of the time error added to the phase increment between samples in a cumulative phase random walk model. The standard deviation of the phase increment error normalized to the oscillation period is f_RO × σ_t.
+I set the oscillator frequency to 50 MHz, corresponding to a period of 20 ns. The ratio of the oscillation frequency to the sampling frequency was r = 4.9505, giving a sampling frequency of approximately 10.10 MHz.
 
-I divided the generated raw bits into 256-bit input blocks and applied SHA-256 separately to each block, producing a 256-bit digest for every input block.
+I then divided the generated raw bitstream into 256-bit blocks and hashed each block separately with SHA-256.
 
-What happens if there is zero noise (jitter) in the system? Due to the mathematical properties of the frequency ratio, the raw bit sequence repeats the exact same pattern with a period of 2,000 bits. Consequently, the SHA-256 output produced from 256-bit blocks also repeats perfectly, with a period of 32,000 bits. By memorizing a template of the past 32,000 bits, one can predict the future of even the SHA-256 output with 100% accuracy.
+Without jitter, the raw bitstream repeats every 2,000 bits. Because the bits are grouped into 256-bit blocks before hashing, the SHA-256 output repeats every 32,000 bits. This follows from the least common multiple of 2,000 and 256.
 
-Next, I introduced synthetic cumulative phase jitter: a 5-picosecond (ps) standard deviation in the timing error added at each sampling step. This models one kind of timing uncertainty that can arise in real oscillators; it is not a measurement of a physical device. The same fixed-template predictor produced:
-- 0 ps jitter: 100% prediction accuracy (fixed-template prediction of SHA output)
-- 5 ps jitter: 49.99% prediction accuracy (using the same predictor)
+In other words, even a SHA-256 output can be perfectly predictable when its input follows a repeating pattern.
 
-In a binary prediction task, 49.99% is essentially chance-level performance. Under this fixed-template test, adding only 5 ps of per-step jitter was enough to eliminate the predictor's earlier advantage. But it only evaluates this particular predictor, not every possible prediction method.
+Next, I introduced synthetic cumulative phase jitter. Here, σ_t represents the standard deviation of the timing error added at each sampling step. I set σ_t = 5 ps, allowing small timing deviations to accumulate over time.
 
-It would be premature to conclude that the underlying signal had become random. Did SHA-256 eliminate the regularity, or simply make it harder for my predictor to detect? To answer this, I examined what happens at the hash-block level.
+Using the same fixed-template predictor, I obtained:
 
-*Did the underlying signal become unpredictable, or did the predictor simply lose the pattern it was using?*
+- **0 ps jitter:** 100% prediction accuracy
+- **5 ps jitter:** 49.99% prediction accuracy
+
+For binary prediction, 49.99% is essentially chance-level performance.
+
+Yet this result only shows that the fixed-template predictor could no longer exploit the original recurrence. It does not establish that the underlying source had become unpredictable.
+
+*Did the source lose its regularity, or did the predictor simply lose the pattern it relied on?*
 
 ## Section 2: Why the Hash Output Stops Repeating
 
