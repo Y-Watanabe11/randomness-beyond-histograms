@@ -64,7 +64,7 @@ Yet this result only shows that the fixed-template predictor could no longer exp
 
 Did adding jitter erase the regularity of the original signal, or simply make it harder to detect after SHA-256?
 
-To investigate, I compared bits separated by a lag of 32,000, the exact repetition period of the hash output in the noiseless case.
+To investigate, I compared bits separated by a *lag* of 32,000 (32,000 positions apart), the exact repetition period of the hash output in the noiseless case.
 
 The key lies in how SHA-256 processes the input. In this experiment, each 256-bit block is hashed separately. Even if most raw bits match, a single differing bit makes two input blocks non-identical.
 
@@ -158,7 +158,7 @@ At **5 ps of synthetic jitter**, the results were:
 
 ![Figure 3: Online prediction accuracy of raw oscillator bits and SHA-256 output](../figures/fig3_blind_prediction.png)
 
-*Figure 3. Experiment F: Online next-bit prediction accuracy across synthetic jitter settings. The left panel shows raw oscillator bits; the right panel shows SHA-256 output bits. Discovered-lag prediction is compared with prespecified-lag and first-order Markov baselines. Nonzero-jitter results are averaged over 12 seeds, with 95% confidence intervals.*
+*Figure 3. Experiment F: Online next-bit prediction accuracy across synthetic jitter settings. The left panel shows raw oscillator bits; the right panel shows SHA-256 output bits. Discovered-lag prediction is compared with prespecified-lag, first-order Markov, and majority-class baselines. Nonzero-jitter results are averaged over 12 seeds, with 95% confidence intervals.*
 
 The difference is striking. The predictor achieved **99.60% accuracy on the raw oscillator bits**, even without knowing their theoretical period. Yet its accuracy on the SHA-256 output remained close to 50%.
 
@@ -256,7 +256,7 @@ For comparison, I used the same frequency ratio of 4.9505 and a nominal jitter s
 
 Experiment G used six random seeds, 192,000 discovery bits, 40,000 validation bits, and a final 30% test split. Its results are not directly interchangeable with the estimates from Experiment F.
 
-**Table 3. Prediction accuracy across noise models**
+**Table 3. Online Prediction Accuracy Across Noise Models (Frequency Ratio 4.9505, Nominal Jitter 5 ps)**
 
 | Noise model | Raw bits | SHA-256 output |
 |---|---:|---:|
@@ -317,7 +317,7 @@ The result is narrower, but important:
 
 What does a prediction accuracy near 50% actually tell us?
 
-For a binary sequence, it suggests that the tested predictor found little useful information under the specified conditions.
+For a roughly balanced binary sequence, a score near 50% suggests little advantage over chance for the tested predictor. An appropriate baseline is still necessary, especially if the bit frequencies are imbalanced.
 
 But this result applies only to that particular experiment.
 
@@ -351,7 +351,7 @@ The difference was not in which numbers appeared, but in the order in which they
 
 The ring-oscillator experiments revealed a related problem. Under cumulative phase jitter, raw bits remained predictable with **99.60% accuracy**, while the SHA-256 output was much harder for the tested predictor to forecast.
 
-Under a different noise model and sampling ratio, however, prediction accuracy on the SHA-256 output reached **92.50%**.
+Under independent phase perturbations at the **same frequency ratio of 4.9505**, however, prediction accuracy on the SHA-256 output reached **92.50%**.
 
 These results are not contradictory. They describe different signal conditions and prediction protocols.
 
