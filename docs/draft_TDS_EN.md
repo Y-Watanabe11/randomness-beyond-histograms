@@ -315,33 +315,49 @@ The result is narrower, but important:
 
 ## Section 6: What a Failed Prediction Test Actually Tells Us
 
-What does a prediction score near 50% actually establish?
+What does a prediction accuracy near 50% actually tell us?
 
-It says that a particular predictor failed under a particular information and evaluation protocol.
+For a binary sequence, it suggests that the tested predictor found little useful information under the specified conditions.
 
-It does not prove any of the following:
-- That the generating process has lost all regularity.
-- That a different predictor could never succeed.
-- That the output is cryptographically secure or has sufficient entropy; entropy assessment requires separate evidence and procedures [1].
+But this result applies only to that particular experiment.
 
-(Note: All experiments in this study are based on synthetic RO models and are not measurements from physical devices. Furthermore, the fixed-template prediction in Section 1, the simple match rates in Section 2, and the online predictions in Sections 3 and 5 were each designed under different evaluation conditions. For detailed implementations, confidence intervals, per-seed results, and additional model comparisons, please refer to the GitHub repository linked at the end of this article.)
+It does not prove that the underlying signal has lost all its structure, that another prediction method would also fail, or that the output is cryptographically secure.
 
-I use five questions to interpret a prediction result:
-1. **Target:** raw signal or conditioned output?
-2. **Information:** fixed template or online access to observed history?
-3. **Lag selection:** prespecified or learned from training data?
-4. **Noise:** accumulated, correlated, or independently resampled?
-5. **Other tests:** what do block matches and lagged correlations reveal?
+In particular, **predictability and entropy are related, but they are not the same measurement**. Establishing sufficient entropy requires additional evidence and dedicated evaluation procedures, such as those described in NIST SP 800-90B [1].
+
+The distinction matters because the experiments in this article used different evaluation methods. Section 1 examined a fixed-template predictor, Section 2 measured agreement at a fixed lag, and Sections 3 and 5 evaluated online predictors that could learn useful lags from earlier data.
+
+Their numerical results cannot be interpreted as interchangeable measures of randomness.
+
+To evaluate a prediction result, I find it useful to ask five questions:
+
+1. **Prediction target:** Am I predicting the raw signal or a transformed output?
+2. **Available information:** Can the predictor use previously observed bits, or only a fixed template?
+3. **Pattern discovery:** Was the relevant lag supplied in advance or discovered from the data?
+4. **Noise assumptions:** Does the model allow timing errors to accumulate, correlate, or reset independently?
+5. **Remaining structure:** Have I examined correlations, repeated blocks, and other dependencies beyond a single accuracy score?
+
+These questions do not replace a formal randomness or entropy assessment. They help clarify what a prediction experiment has actually established.
+
+All results presented here come from synthetic ring-oscillator models. They are not measurements of physical devices or claims about the cryptographic security of SHA-256.
 
 ## Closing: Randomness Is Not a Single Number
 
-The opening sequences had identical histograms but different test accuracies: 100.00% and 1.34%. Their order, not their marginal distribution, made the difference.
+At the beginning of this article, two sequences had identical histograms.
 
-The same distinction appears after SHA-256: with cumulative phase noise, a predictor found 99.60% accuracy on raw bits despite chance-level hash-output performance; under a different noise model and sampling ratio, even hashed bits reached 92.50%. These results apply only to the stated synthetic models and prediction protocols.
+Yet their next-value prediction accuracies were dramatically different: **100.00% and 1.34%**.
 
-SHA-256 can obscure a specific recurrence without proving that the source is unpredictable.
+The difference was not in which numbers appeared, but in the order in which they appeared.
 
-**Prediction accuracy is a property of a particular test, not a certificate of randomness.**
+The ring-oscillator experiments revealed a related problem. Under cumulative phase jitter, raw bits remained predictable with **99.60% accuracy**, while the SHA-256 output was much harder for the tested predictor to forecast.
+
+Under a different noise model and sampling ratio, however, prediction accuracy on the SHA-256 output reached **92.50%**.
+
+These results are not contradictory. They describe different signal conditions and prediction protocols.
+
+SHA-256 can make a particular pattern difficult to observe without proving that the original source is unpredictable.
+
+**Prediction accuracy describes a particular experiment. It is not a universal certificate of randomness.**
 
 ## References and Reproducibility
 
