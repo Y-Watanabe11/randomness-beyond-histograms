@@ -60,34 +60,49 @@ Yet this result only shows that the fixed-template predictor could no longer exp
 
 *Did the source lose its regularity, or did the predictor simply lose the pattern it relied on?*
 
-## Section 2: Why the Hash Output Stops Repeating
+## Section 2: Why the Hash Output Loses Its Fixed-Lag Pattern
 
-The key is the 256-bit block boundary. A single differing input bit makes two blocks non-identical, and their SHA-256 digests will typically differ in many output positions. I measured three match rates at a lag of 32,000 bits:
-1. The raw-bit match rate.
-2. The exact match rate of complete 256-bit input blocks.
-3. The SHA-256 output-bit match rate.
+Did adding jitter erase the regularity of the original signal, or simply make it harder to detect after SHA-256?
 
-SHA-256 exhibits the avalanche effect: changing one input bit typically changes approximately half of the digest bits. This is a statistical tendency, not a guarantee for each pair of inputs.
+To investigate, I compared bits separated by a lag of 32,000, the exact repetition period of the hash output in the noiseless case.
 
-Let q be the fraction of exactly matching input blocks, and s the output-bit match rate conditioned on differing input blocks.
+The key lies in how SHA-256 processes the input. In this experiment, each 256-bit block is hashed separately. Even if most raw bits match, a single differing bit makes two input blocks non-identical.
 
-The resulting SHA-256 output-bit match rate, p_SHA, is:
+SHA-256 exhibits the *avalanche effect*: changing an input typically changes roughly half of the digest bits. This is a statistical tendency, not a guarantee for every pair of inputs.
 
-![Equation 1: Exact decomposition of SHA-256 output bit agreement](../figures/eq1_sha_match_identity.png)
+I measured three quantities at the same lag: raw-bit agreement, exact matches between complete 256-bit input blocks, and SHA-256 output-bit agreement.
 
-The identity separates matching and non-matching input blocks. Since I observed s ≈ 0.5 for differing blocks, it becomes:
+At **5 ps** of cumulative phase jitter, the results were:
 
-![Equation 2: Approximate agreement when distinct inputs share about half their hash-output bits](../figures/eq2_sha_match_approx.png)
+- **92.52%** of raw bits matched.
+- Only **1.19%** of complete input blocks matched exactly.
+- **50.62%** of SHA-256 output bits matched.
 
-At 5 ps, q was 1.19%, implying an output-bit match rate near 50.60%; the simulation yielded 50.62%.
+Why such a large difference?
 
-![Figure 2: Raw bit, block, and SHA-256 output recurrence versus jitter](../figures/fig2_tds.png)
+Matching most of the raw bits is not enough to reproduce an entire input block. All 256 bits must match for the blocks to be identical.
 
-*Figure 2. Experiment D: Match rates at a 32,000-bit lag as a function of jitter magnitude. Compares RO raw bits, exact match rates of 256-bit SHA-256 input blocks, and SHA-256 output bit match rates. Aggregated over 30 seeds (0 ps is deterministic); error bars indicate 95% confidence intervals. Note that this represents fixed-lag match rates, not predictor accuracy.*
+Let **q** represent the fraction of input blocks that match exactly, and **s** the output-bit match rate when the input blocks differ.
 
-Meanwhile, raw bits still matched at 92.52% at this lag. Frequent raw-bit matches can therefore coexist with almost chance-level hash-output matches.
+Identical inputs always produce identical SHA-256 digests. For differing inputs, the output bits match at rate s. Therefore, the overall output-bit match rate is:
 
-SHA-256 created no new physical entropy. It made the remaining raw-bit structure harder to observe at this particular lag. These match rates are descriptive statistics, not bounds on every possible predictor.
+![Equation 1: SHA-256 output-bit match rate](../figures/eq1_sha_match_identity.png)
+
+In this experiment, s was approximately 0.5. The expression therefore simplifies to:
+
+![Equation 2: Approximate output-bit match rate](../figures/eq2_sha_match_approx.png)
+
+With q = 1.19%, this predicts an output-bit match rate of approximately **50.60%**, remarkably close to the observed **50.62%**.
+
+![Figure 2: Raw-bit, block, and SHA-256 output agreement versus jitter](../figures/fig2_tds.png)
+
+*Figure 2. Experiment D: Agreement at a fixed lag of 32,000 bits across different synthetic jitter settings. The three curves show raw-bit agreement, exact matching of 256-bit SHA-256 input blocks, and SHA-256 output-bit agreement. Results are aggregated over 30 random seeds, with 95% confidence intervals. The zero-jitter case is deterministic.*
+
+SHA-256 did not create a new source of physical entropy. Instead, it made the periodic structure remaining in the raw bits much less visible at this particular lag.
+
+Importantly, **a match rate near 50% at one fixed lag is not proof that every possible predictor will fail**.
+
+That distinction leads to the next experiment: what happens if the predictor is allowed to discover its own lag?
 
 ## Section 3: What Happens When the Predictor Is Allowed to Search?
 
