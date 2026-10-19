@@ -2,7 +2,7 @@
 
 Why a failed prediction test does not prove a signal is unpredictable.
 
-## Opening — Two Identical Histograms
+## Opening: Two Identical Histograms
 
 Imagine you have two sequences in front of you, each consisting of 74,160 integers ranging from 0 to 99.
 
@@ -22,11 +22,11 @@ If the two sequences have identical distributions, why is one so much easier to 
 
 Once you know the trick, it is simple: one sequence is arranged in a regular, periodic order, while the other is a completely shuffled version of it.
 
-A histogram shows the marginal distribution—which values appear and how frequently—but not the temporal dependence between successive values. That is where the sequence's "memory of order" can hide.
+A histogram shows the marginal distribution (which values appear and how frequently), but not the temporal dependence between successive values. That is where the sequence's "memory of order" can hide.
 
 This is more than a statistical puzzle. The same distinction matters when evaluating random number generators, sensor signals, and cryptographic hash outputs. An output that looks random does not, by itself, establish that the underlying signal is unpredictable.
 
-## Section 1 — A Random-Looking Output Can Still Have a Memory
+## Section 1: A Random-Looking Output Can Still Have a Memory
 
 A number-guessing game is a familiar exercise for people learning Python. While teaching programming to elementary school students as a part-time job, I decided to build one myself and experimented with different implementations.
 
@@ -40,19 +40,19 @@ I set the oscillation frequency to f_RO = 50 MHz (a period of 20 ns) and the osc
 
 I divided the generated raw bits into 256-bit input blocks and applied SHA-256 separately to each block, producing a 256-bit digest for every input block.
 
-What happens if there is zero noise (jitter) in the system? Due to the mathematical properties of the frequency ratio, the raw bit sequence repeats the exact same pattern with a period of 2,000 bits. Consequently, the SHA-256 output—processed in 256-bit blocks—also becomes a perfect repeat with a period of 32,000 bits. By memorizing a template of the past 32,000 bits, one can predict the future of even the SHA-256 output with 100% accuracy.
+What happens if there is zero noise (jitter) in the system? Due to the mathematical properties of the frequency ratio, the raw bit sequence repeats the exact same pattern with a period of 2,000 bits. Consequently, the SHA-256 output produced from 256-bit blocks also repeats perfectly, with a period of 32,000 bits. By memorizing a template of the past 32,000 bits, one can predict the future of even the SHA-256 output with 100% accuracy.
 
 Next, I introduced synthetic cumulative phase jitter: a 5-picosecond (ps) standard deviation in the timing error added at each sampling step. This models one kind of timing uncertainty that can arise in real oscillators; it is not a measurement of a physical device. The same fixed-template predictor produced:
 - 0 ps jitter: 100% prediction accuracy (fixed-template prediction of SHA output)
 - 5 ps jitter: 49.99% prediction accuracy (using the same predictor)
 
-In a binary prediction task, 49.99% is essentially chance-level performance. Under this fixed-template test, adding only 5 ps of per-step jitter was enough to eliminate the predictor's earlier advantage. But that result tells us about this predictor—not about every possible way to predict the signal.
+In a binary prediction task, 49.99% is essentially chance-level performance. Under this fixed-template test, adding only 5 ps of per-step jitter was enough to eliminate the predictor's earlier advantage. But it only evaluates this particular predictor, not every possible prediction method.
 
 It would be premature to conclude that the underlying signal had become random. Did SHA-256 eliminate the regularity, or simply make it harder for my predictor to detect? To answer this, I examined what happens at the hash-block level.
 
 *Did the underlying signal become unpredictable, or did the predictor simply lose the pattern it was using?*
 
-## Section 2 — Why the Hash Output Stops Repeating
+## Section 2: Why the Hash Output Stops Repeating
 
 The key is the 256-bit block boundary. A single differing input bit makes two blocks non-identical, and their SHA-256 digests will typically differ in many output positions. I measured three match rates at a lag of 32,000 bits:
 1. The raw-bit match rate.
@@ -81,7 +81,7 @@ Meanwhile, raw bits still matched at 92.52% at this lag. Frequent raw-bit matche
 
 SHA-256 created no new physical entropy. It made the remaining raw-bit structure harder to observe at this particular lag. These match rates are descriptive statistics, not bounds on every possible predictor.
 
-## Section 3 — What Happens When the Predictor Is Allowed to Search?
+## Section 3: What Happens When the Predictor Is Allowed to Search?
 
 Could a predictor recover the structure without being told the theoretical periods of 2,000 and 32,000 bits? I tested this by allowing it to discover candidate lags from the training data.
 
@@ -107,7 +107,10 @@ for lag, strength in candidates:
     item = (score, -lag, lag, flip, strength)
     if best is None or item[:2] > best[:2]:
         best = item
+score, _, lag, flip, strength = best
+accept = bool(score - base >= min_gain)
 
+# In evaluate(), choose_lag returns this decision before testing.
 decision = choose_lag(bits, max_lag, top_k, min_gain)
 t = np.arange(TRAIN_CUT, N)
 if decision["accept"]:
@@ -135,7 +138,7 @@ At 2 ps, the SHA-256 lag search reached 53.38%, versus 52.29% for a prespecified
 
 Why could the raw-bit predictor still reach 99.60% at 5 ps? The answer lies in short approximate phase recurrences: lag 101 at 5 ps and an inverted lag 10 at higher jitter.
 
-## Section 4 — Why a Short Imperfect Period Can Beat a Perfect Long One
+## Section 4: Why a Short Imperfect Period Can Beat a Perfect Long One
 
 A short approximate recurrence can beat an exact but much longer period when noise accumulates with elapsed samples.
 
@@ -170,7 +173,7 @@ At 50 ps, Experiment D's 32,000-lag raw-bit match rate was 49.62%, while Experim
 
 This behavior is related to the role of sampling-frequency ratios and phase recurrence in coherent-sampling oscillator-based random number generators [3]. The present experiments use a separate synthetic model; they do not reproduce that paper's hardware results.
 
-## Section 5 — Change the Noise Model, Change the Conclusion
+## Section 5: Change the Noise Model, Change the Conclusion
 
 So far, cumulative phase noise has driven SHA-256 prediction toward 50%. I next compared three noise processes at ratio 4.9505 and a 5 ps model setting:
 - **Cumulative random walk:** independent phase increments accumulate.
@@ -216,9 +219,9 @@ RO-based true random number generators can use physical oscillator jitter as an 
 
 What Experiment G demonstrates is that even with the exact same SHA-256 function, the predictability of the output depends heavily on the combination of the phase noise's temporal structure and the sampling ratio. The 92.50% figure is simply the outcome obtained under one specific combination of those conditions.
 
-## Section 6 — What a Failed Prediction Test Actually Tells Us
+## Section 6: What a Failed Prediction Test Actually Tells Us
 
-What does a prediction score near 50% actually tell us?
+What does a prediction score near 50% actually establish?
 
 It says that a particular predictor failed under a particular information and evaluation protocol.
 
@@ -236,7 +239,7 @@ I use five questions to interpret a prediction result:
 4. **Noise:** accumulated, correlated, or independently resampled?
 5. **Other tests:** what do block matches and lagged correlations reveal?
 
-## Closing — Randomness Is Not a Single Number
+## Closing: Randomness Is Not a Single Number
 
 The opening sequences had identical histograms but different test accuracies: 100.00% and 1.34%. Their order, not their marginal distribution, made the difference.
 
@@ -247,6 +250,9 @@ SHA-256 can obscure a specific recurrence without proving that the source is unp
 **Prediction accuracy is a property of a particular test, not a certificate of randomness.**
 
 ## References and Reproducibility
+
+All figures and equation images in this article were prepared by the author from synthetic experiments unless otherwise noted.
+
 - [1] NIST, *Recommendation for the Entropy Sources Used for Random Bit Generation* (2018), NIST SP 800-90B. https://doi.org/10.6028/NIST.SP.800-90B
 - [2] M. Baudet, D. Lubicz, J. Micolod, A. Tassiaux, *On the Security of Oscillator-Based Random Number Generators* (2011), Journal of Cryptology 24, 398–425. https://doi.org/10.1007/s00145-010-9089-3
 - [3] A. Peetermans, V. Rožić, I. Verbauwhede, *Design and Analysis of Configurable Ring Oscillators for True Random Number Generation Based on Coherent Sampling* (2021), ACM Transactions on Reconfigurable Technology and Systems. https://doi.org/10.1145/3433166
