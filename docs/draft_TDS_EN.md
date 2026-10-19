@@ -240,49 +240,78 @@ Related phase-recurrence ideas also appear in work on coherent-sampling oscillat
 
 ## Section 5: Change the Noise Model, Change the Conclusion
 
-So far, cumulative phase noise has driven SHA-256 prediction toward 50%. I next compared three noise processes at ratio 4.9505 and a 5 ps model setting:
-- **Cumulative random walk:** independent phase increments accumulate.
-- **AR(1) phase increments:** strongly correlated increments (ρ = 0.90) accumulate.
-- **Independent phase perturbations:** phase offsets are independently resampled without accumulation.
+So far, I have modeled timing errors as small fluctuations that accumulate over time.
 
-The numerical setting of 5 ps does **not** represent equal physical noise power across the three models. This experiment tests sensitivity to temporal noise structure, not equal-strength noise sources.
+But what happens if the noise behaves differently?
 
-Experiment G used six seeds, a 192,000-bit discovery budget, 40,000 validation bits, and a final 30% test split. These differ from Experiment F's protocol, so its 50.59% and Experiment G's 50.50% should not be treated as the same estimate.
+To find out, I repeated the experiment using three models:
 
-**Table 3. Experiment G: Prediction accuracy at 5 ps and ratio 4.9505**
+- **Cumulative random walk:** Small timing errors accumulate from one sample to the next.
+- **Correlated phase increments (AR(1)):** Timing errors still accumulate, but successive increments are strongly correlated (ρ = 0.90).
+- **Independent phase perturbations:** Each sample receives a fresh phase offset, without accumulating errors from previous samples.
 
-| Noise model | Raw-bit prediction accuracy | SHA-256 prediction accuracy |
-|:--|--:|--:|
-| Cumulative phase random walk | 99.60% | **50.50%** |
-| AR(1) phase increments | 99.01% | **50.02%** |
+The third model represents a particularly different situation: instead of drifting farther away over time, the phase error starts fresh at every sample.
+
+For comparison, I used the same frequency ratio of 4.9505 and a nominal jitter setting of 5 ps. However, **5 ps does not represent equivalent physical noise strength across these models**.
+
+Experiment G used six random seeds, 192,000 discovery bits, 40,000 validation bits, and a final 30% test split. Its results are not directly interchangeable with the estimates from Experiment F.
+
+**Table 3. Prediction accuracy across noise models**
+
+| Noise model | Raw bits | SHA-256 output |
+|---|---:|---:|
+| Cumulative random walk | 99.60% | **50.50%** |
+| Correlated phase increments | 99.01% | **50.02%** |
 | Independent phase perturbations | 99.94% | **92.50%** |
 
-![Figure 4: Online prediction accuracy across phase-noise models](../figures/fig4_tds.png)
+![Figure 4: Prediction accuracy under three phase-noise models](../figures/fig4_tds.png)
 
-*Figure 4. Experiment G: Comparison of three phase noise models and online next-bit prediction accuracy at a frequency ratio of 4.9505 and jitter setting of 5 ps. Blue bars represent RO raw bits; orange bars represent SHA-256 outputs. Values are means across 6 seeds; error bars indicate 95% confidence intervals. The nominal jitter setting is not physically equivalent across models.*
+*Figure 4. Experiment G: Online prediction accuracy for raw oscillator bits and SHA-256 outputs under three synthetic noise models at a frequency ratio of 4.9505 and a nominal 5 ps jitter setting. Results show six-seed means and 95% confidence intervals.*
 
-Independent phase perturbations produced 92.50% SHA-256 prediction accuracy at ratio 4.9505. Varying the ratio changes the result:
+The difference is substantial.
 
-**Table 4. Experiment G: SHA-256 prediction with independent phase perturbations at 5 ps**
+With cumulative or correlated phase increments, SHA-256 prediction remained close to 50%. Under independent phase perturbations, however, it reached **92.50%**.
 
-| Oscillation-to-sampling ratio | SHA-256 prediction accuracy |
-|--:|--:|
+Why?
+
+Because independent phase offsets do not accumulate, the oscillator can repeatedly return close to the same phase even after many samples. In this configuration, complete 256-bit input blocks matched at a lag of 32,000 approximately **84.96%** of the time.
+
+When entire input blocks repeat, SHA-256 produces identical digests. The 84.96% block-match rate is not the same measurement as the 92.50% online prediction accuracy, but it helps explain why substantial predictability remains.
+
+### Does the Frequency Ratio Matter?
+
+I then changed the ratio between the oscillator and sampling frequencies.
+
+Keeping the independent phase-perturbation model, I obtained:
+
+**Table 4. SHA-256 Output Prediction Accuracy by Frequency Ratio (Independent Phase Perturbations, 5 ps)**
+
+| Frequency ratio | Online prediction accuracy |
+|---:|---:|
 | 4.9505 | **92.50%** |
-| approximately 4.953328 | **89.04%** |
-| approximately 4.618034 | **57.01%** |
+| ≈ 4.953328 | **89.04%** |
+| ≈ 4.618034 | **57.01%** |
 | 4.917321 | **50.15%** |
 
-The ratio near 4.953328 is defined as 4.9505 + 0.002√2, which is irrational, yet gives 89.04% accuracy. In contrast, 4.917321 is rational (4,917,321/1,000,000) but gives only 50.15%. Thus, rationality itself is not the deciding factor. In these experiments, the relevant question is whether the lag search finds a useful approximate recurrence aligned to 256-bit block boundaries and whether that recurrence survives the chosen noise process.
+![Figure 5: Frequency-ratio and noise-model sensitivity](../figures/fig5_tds.png)
 
-![Figure 5: Sampling-ratio and phase-noise model sensitivity in raw and hashed bits](../figures/fig5_tds.png)
+*Figure 5. Experiment G: Online prediction accuracy across four frequency ratios and three synthetic noise models at a nominal 5 ps jitter setting. The left panel shows raw bits; the right shows SHA-256 output bits. Each cell is a six-seed mean, evaluated with 192,000 discovery bits, 40,000 validation bits, and a final 30% test split. Ratios labeled 4.953328* and 4.618034* are rounded displays of 4.9505 + 0.002√2 and 4 + (√5 − 1)/2, respectively.*
 
-*Figure 5. Experiment G: Online next-bit prediction accuracy across four frequency ratios and three phase noise models at a 5 ps jitter setting. Left panel shows RO raw bits; right panel shows SHA-256 outputs. Each cell represents the 6-seed mean (darker shades indicate higher accuracy), evaluated using 192,000 discovery bits, 40,000 validation bits, and a 30% final test split. Frequency ratios "4.953328*" and "4.618034*" are rounded displays of 4.9505 + 0.002√2 and 4 + (√5 − 1)/2, respectively. The 5 ps value does not imply physically equivalent noise strength across models.*
+One comparison is especially revealing.
 
-Independent phase offsets do not accumulate. At ratio 4.9505, 256-bit input blocks exactly matched 84.96% of the time at lag 32,000, allowing substantial hash-output recurrence. That descriptive block-match rate is distinct from the 92.50% online prediction accuracy.
+The ratio approximately equal to 4.953328 was defined using an irrational number, yet the predictor achieved **89.04%** accuracy.
 
-RO-based true random number generators can use physical oscillator jitter as an entropy source [2]. Real circuits also exhibit supply variation, temperature drift, and correlated noise; the synthetic random walk does not model all of these effects. Independent phase offsets serve only as a comparison model, not a description of PLL clocks.
+In contrast, 4.917321 is a rational number (4,917,321/1,000,000), but its prediction accuracy was only **50.15%**.
 
-What Experiment G demonstrates is that even with the exact same SHA-256 function, the predictability of the output depends heavily on the combination of the phase noise's temporal structure and the sampling ratio. The 92.50% figure is simply the outcome obtained under one specific combination of those conditions.
+So the distinction is not simply whether the frequency ratio is rational or irrational.
+
+What matters in these experiments is whether the predictor can find a useful approximate repetition that aligns with the 256-bit input-block boundaries, and whether that pattern survives the noise.
+
+These findings do not imply that independent phase perturbations accurately describe all real oscillators. Physical ring-oscillator random number generators can exploit timing jitter as an entropy source [2], and actual circuits exhibit more complicated noise behavior.
+
+The result is narrower, but important:
+
+**Even with the same SHA-256 function, the measured predictability can change dramatically when the source's timing behavior or sampling frequency changes.**
 
 ## Section 6: What a Failed Prediction Test Actually Tells Us
 
