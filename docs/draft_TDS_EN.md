@@ -31,7 +31,7 @@ This is more than a statistical puzzle. The same distinction matters when evalua
 
 A number-guessing game is a familiar exercise for people learning Python. While teaching programming to elementary school students as a part-time job, I decided to build one myself and experimented with different implementations.
 
-Since my research focuses on analog semiconductor circuit design, I gradually became interested in games that combined software with hardware. Along the way, my interest expanded into how random numbers are generated. While building and testing several random number generators, I stumbled upon the phenomenon presented in this article.
+Since my research focuses on analog semiconductor circuit design, I gradually began building games that combined software with hardware. Along the way, my interest expanded into how random numbers are generated. While building and testing several random number generators, I stumbled upon the phenomenon presented in this article.
 
 What particularly intrigued me was how the regularity in an original sequence changes when passed through SHA-256.
 
