@@ -6,51 +6,51 @@ Why a failed prediction test does not prove a signal is unpredictable.
 
 Imagine you have two sequences in front of you, each consisting of 74,160 integers ranging from 0 to 99.
 
-First, you count the frequency of each number in both sequences and plot their histograms. The two graphs match 100%. The statistical distribution—which numbers appear and how often—is completely identical between the two sequences.
+First, you count the frequency of each number in both sequences and plot their histograms. The two histograms are identical, bin for bin. Every number appears exactly the same number of times in both sequences.
 
-Now, can you predict the "future" of these two sequences?
+But can you predict which number comes next in each sequence?
 
-When we set up a simple predictor designed to detect periodicity and measured its prediction accuracy on an unseen test split, the results were striking:
+We used a simple periodicity-based predictor and evaluated its first-guess accuracy on a held-out test segment. The results were striking:
 
-- Sequence 1 prediction accuracy: 100%
-- Sequence 2 prediction accuracy: 1.34% (almost identical to a 1% random guess)
+- Sequence 1 prediction accuracy: **100.00%**
+- Sequence 2 prediction accuracy: **1.34%** (close to the 1% chance level for 100 possible values)
 
 ![Figure 1: Identical histograms of ordered and shuffled sequences with contrasting test accuracy](../figures/fig1_identical_histograms_red.svg)
 
-*Figure 1. Experiment A: An original sequence and its fully shuffled counterpart share identical occurrence counts across 74,160 integers. The top panel shows the empirical histogram shared by both; the bottom panel shows the initial prediction accuracy on a chronologically split, held-out test set. Accuracy was 100.00% for the original order and 1.34% after shuffling.*
+*Figure 1. Experiment A: An original sequence and its fully shuffled counterpart share identical occurrence counts across 74,160 integers. The top panel shows their shared empirical histogram; the bottom panel shows first-guess accuracy on a chronologically held-out test segment. Accuracy was 100.00% for the original order and 1.34% after shuffling.*
 
 If the two sequences have identical distributions, why is one so much easier to predict?
 
 Once you know the trick, it is simple: one sequence is arranged in a regular, periodic order, while the other is a completely shuffled version of it.
 
-A histogram only tells us the marginal distribution—which values appear and how frequently. It completely strips away temporal dependence: the "memory of order" that dictates which value is likely to follow another.
+A histogram shows the marginal distribution—which values appear and how frequently—but not the temporal dependence between successive values. That is where the sequence's "memory of order" can hide.
 
-This is not just a statistical puzzle. We can fall into the exact same trap when evaluating random number generators, sensor signals, or the outputs of cryptographic hash functions. "Looking random at the output" and "the underlying signal being unpredictable" are not the same thing.
+This is more than a statistical puzzle. The same distinction matters when evaluating random number generators, sensor signals, and cryptographic hash outputs. An output that looks random does not, by itself, establish that the underlying signal is unpredictable.
 
 ## Section 1 — A Random-Looking Output Can Still Have a Memory
 
-A "number guessing game" is something almost everyone builds at least once when learning Python. While working part-time teaching programming to elementary school students, I decided to build one myself and experimented with different ways of writing it.
+A number-guessing game is a familiar exercise for people learning Python. While teaching programming to elementary school students as a part-time job, I decided to build one myself and experimented with different implementations.
 
-Because my day-to-day research focuses on analog semiconductor circuit design, I gradually started building games that combined not just software, but hardware as well. Along the way, my interest expanded into how random numbers are generated. While building and testing several random number generators, I stumbled upon the phenomenon presented in this article.
+Since my research focuses on analog semiconductor circuit design, I gradually became interested in games that combined software with hardware. Along the way, my interest expanded into how random numbers are generated. While building and testing several random number generators, I stumbled upon the phenomenon presented in this article.
 
 What particularly intrigued me was how the regularity in an original sequence changes when passed through SHA-256.
 
-To dig deeper into this question, let's run an experiment using a synthetic model of a Ring Oscillator (RO), which is commonly used in hardware random number generators.
+To investigate this question, let's use a synthetic model of a ring oscillator (RO), a circuit commonly used in hardware random number generators.
 
 We set the oscillation frequency to $f_{\mathrm{RO}} = 50\text{ MHz}$ (a period of $20\text{ ns}$) and the oscillation-to-sampling frequency ratio to $r = 4.9505$ (a sampling frequency of approximately $10.10\text{ MHz}$). In this experiment, a "jitter of $5\text{ ps}$" refers to $\sigma_t$, the standard deviation of the time error added to the phase increment between samples in a cumulative phase random walk model. The standard deviation of the phase increment error normalized to the oscillation period is $f_{\mathrm{RO}}\sigma_t$.
 
-As part of our experimental setup, we partition the generated raw bit sequence (RO raw bits) into 256-bit blocks and feed each block into SHA-256 to obtain a 256-bit digest. (Note that SHA-256 itself does not require inputs to be fixed at 256 bits.)
+In this experiment, we divide the generated raw bit sequence into 256-bit blocks and hash each block separately with SHA-256, producing one 256-bit digest per block. This is our experimental choice: SHA-256 does not require a 256-bit input.
 
 What happens if there is zero noise (jitter) in the system? Due to the mathematical properties of the frequency ratio, the raw bit sequence repeats the exact same pattern with a period of 2,000 bits. Consequently, the SHA-256 output—processed in 256-bit blocks—also becomes a perfect repeat with a period of 32,000 bits. By memorizing a template of the past 32,000 bits, one can predict the future of even the SHA-256 output with 100% accuracy.
 
-Now, let's introduce a tiny amount of "cumulative phase jitter" (noise where slight timing deviations accumulate over time), which is unavoidable in real-world circuits—just 5 picoseconds (ps). When we try to predict the SHA-256 output using the same fixed-template predictor, the results change dramatically:
+Next, we introduce a small amount of synthetic cumulative phase jitter: a 5-picosecond (ps) standard deviation in the timing error added at each sampling step. This models one kind of timing uncertainty that can arise in real oscillators; it is not a measurement of a physical device. Using the same fixed-template predictor on the SHA-256 output, we obtain:
 
 - 0 ps jitter: 100% prediction accuracy (fixed-template prediction of SHA output)
 - 5 ps jitter: 49.99% prediction accuracy (using the same predictor)
 
-In a binary (0 or 1) prediction task, an accuracy of 49.99% is no better than a coin toss. However, what is noteworthy here is not simply that the predictor failed, but that adding a minuscule amount of jitter caused the apparent periodicity in the SHA-256 output to vanish abruptly.
+In a binary prediction task, 49.99% is essentially chance-level performance. Under this fixed-template test, adding only 5 ps of per-step jitter was enough to eliminate the predictor's earlier advantage. But that result tells us about this predictor—not about every possible way to predict the signal.
 
-Concluding that "the signal has become random" at this point would be premature. Did SHA-256 erase the original regularity, or did it merely make that regularity harder to read from the output? We need to investigate the difference.
+It would be premature to conclude that the underlying signal had become random. Did SHA-256 eliminate the regularity, or did it merely make that regularity harder for our predictor to detect? To answer that, we need to examine what happens inside each hash input block.
 
 *Did the underlying signal become unpredictable, or did our predictor simply lose the pattern it was using?*
 
