@@ -9,7 +9,7 @@ Imagine two sequences, each containing 74,160 integers ranging from 0 to 99. The
 Can we predict which number comes next? I tested a simple periodicity-based predictor on a held-out test segment of each sequence:
 
 - **Sequence 1: 100.00%** prediction accuracy
-- **Sequence 2: 1.34%** prediction accuracy (the same as always guessing the most common value)
+- **Sequence 2: 1.34%** prediction accuracy (comparable to the 1.33% frequency-only baseline)
 
 ![Figure 1: Identical histograms of ordered and shuffled sequences](../figures/fig1_tds.png)
 
@@ -122,7 +122,7 @@ A smaller effect appeared at 2 ps. There, the discovered-lag predictor reached 5
 
 15,616 × 4.9505 = 77,307.008
 
-A 1.10-percentage-point difference is within the confidence intervals, so this is a hint rather than a demonstrated improvement.
+The 1.10-percentage-point difference alone does not establish a statistically reliable improvement.
 
 On the raw bits at 5 ps, the predictor did not use the exact 2,000-sample period at all. It chose a short recurrence at **lag 101**.
 
@@ -160,7 +160,7 @@ The individual phase-increment errors ε_k are independent, so the accumulated t
 
 Lag 2,000 is perfectly aligned in the noiseless model, but its timing uncertainty is more than four times larger than that of lag 101. Consistent with this trade-off, Experiment F reached **99.60%** with the discovered lag and **98.20%** with the prespecified 2,000-sample lag. The two time values cannot simply be added to get a bit error rate, since phase wrapping and the sampling threshold also matter.
 
-The choice of lag matters even more at higher jitter. At 50 ps, raw-bit agreement at the fixed 32,000 lag in Experiment D fell to **49.62%**, while the lag-searching predictor in Experiment F still reached **98.50%**.
+The choice of lag matters even more at higher jitter. At 50 ps, raw-bit agreement at the fixed 32,000 lag in Experiment D fell to **49.62%**, while the lag-searching predictor in Experiment F still reached **98.50%**. These are different metrics: the former measures agreement at a fixed lag, while the latter measures online prediction accuracy after lag selection.
 
 Similar phase-recurrence ideas appear in coherent-sampling oscillator-based random number generators [3]. The experiments here use a separate synthetic model and do not reproduce that work's hardware measurements.
 
@@ -204,6 +204,8 @@ Keeping the independent phase-perturbation model, I then changed the ratio betwe
 ![Figure 5: Frequency-ratio and noise-model sensitivity](../figures/fig5_tds.png)
 
 *Figure 5. Experiment G: Online prediction accuracy across four frequency ratios and three synthetic noise models at a nominal 5 ps jitter setting. The left panel shows raw bits; the right shows SHA-256 output bits. Each cell is a six-seed mean, evaluated with 192,000 discovery bits, 40,000 validation bits, and a final 30% test split. Ratios labeled 4.953328* and 4.618034* are rounded displays of 4.9505 + 0.002√2 and 4 + (√5 − 1)/2, respectively.*
+
+The offsets in Table 4 are deterministic phase mismatches expressed in equivalent time, not the magnitude of the injected jitter.
 
 The ratio near 4.953328 is irrational, yet the predictor reached **89.04%**. The ratio 4.917321 is rational (4,917,321/1,000,000), but accuracy was only **50.15%**. So the distinction is not whether the ratio is rational. Across these four ratios, accuracy falls in the same order as the residual phase offset of the closest block-aligned recurrence rises. Four points cannot establish a general rule, and I have not checked which lag the predictor actually selected in each case, but the ordering supports a simple reading: what matters is whether a well-aligned, block-aligned recurrence exists within reach and survives the chosen noise process.
 
