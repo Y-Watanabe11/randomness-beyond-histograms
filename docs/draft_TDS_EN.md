@@ -13,7 +13,7 @@ Can we predict which number comes next? I tested a simple periodicity-based pred
 
 ![Figure 1: Identical histograms of ordered and shuffled sequences](../figures/fig1_tds.png)
 
-*Figure 1. Experiment A: The original sequence and its shuffled counterpart have identical empirical histograms. A periodicity-based predictor achieves 100.00% prediction accuracy on held-out data from the original sequence and 1.34% after shuffling.*
+*Figure 1. Experiment A: The original sequence and its shuffled counterpart have identical empirical histograms. A periodicity-based predictor achieves 100.00% prediction accuracy on held-out data from the original sequence and 1.34% after shuffling. Image by author.*
 
 The difference lies in their order. The first sequence contains a repeating pattern, while the second is an exact shuffle of the same values. Shuffling preserves the histogram but destroys the temporal structure the predictor relies on.
 
@@ -52,17 +52,21 @@ I measured three quantities at the same lag. At **5 ps** of cumulative phase jit
 
 Matching most of the raw bits is not enough to reproduce an input block, because all 256 bits must match. Let **q** be the fraction of input blocks that match exactly, and **s** the output-bit match rate when the input blocks differ. Identical inputs always produce identical digests, so the overall output-bit match rate is:
 
-![Equation 1: SHA-256 output-bit match rate](../figures/eq1_sha_match_identity.png)
+$$
+p_{\mathrm{SHA}} = q + (1 - q)s
+$$
 
 In this experiment, s was approximately 0.5, so the expression simplifies to:
 
-![Equation 2: Approximate output-bit match rate](../figures/eq2_sha_match_approx.png)
+$$
+p_{\mathrm{SHA}} \approx \frac{1 + q}{2}
+$$
 
 With q = 1.19%, this predicts an output-bit match rate of about **50.60%**, close to the observed **50.62%**.
 
 ![Figure 2: Raw-bit, block, and SHA-256 output agreement versus jitter](../figures/fig2_tds.png)
 
-*Figure 2. Experiment D: Agreement at a fixed lag of 32,000 bits across different synthetic jitter settings. The three curves show raw-bit agreement, exact matching of 256-bit SHA-256 input blocks, and SHA-256 output-bit agreement. Results are aggregated over 30 random seeds, with 95% confidence intervals. The zero-jitter case is deterministic.*
+*Figure 2. Experiment D: Agreement at a fixed lag of 32,000 bits across different synthetic jitter settings. The three curves show raw-bit agreement, exact matching of 256-bit SHA-256 input blocks, and SHA-256 output-bit agreement. Results are aggregated over 30 random seeds, with 95% confidence intervals. The zero-jitter case is deterministic. Image by author.*
 
 SHA-256 did not create a new source of physical entropy. It made the periodic structure remaining in the raw bits much less visible at this particular lag. A match rate near 50% at one fixed lag does not mean every possible predictor will fail.
 
@@ -114,7 +118,7 @@ test_accuracy = float(np.mean(pred == bits[t]))
 
 ![Figure 3: Online prediction accuracy of raw oscillator bits and SHA-256 output](../figures/fig3_blind_prediction.png)
 
-*Figure 3. Experiment F: Online next-bit prediction accuracy across synthetic jitter settings. The left panel shows raw oscillator bits; the right panel shows SHA-256 output bits. Discovered-lag prediction is compared with prespecified-lag, first-order Markov, and majority-class baselines. Nonzero-jitter results are averaged over 12 seeds, with 95% confidence intervals.*
+*Figure 3. Experiment F: Online next-bit prediction accuracy across synthetic jitter settings. The left panel shows raw oscillator bits; the right panel shows SHA-256 output bits. Discovered-lag prediction is compared with prespecified-lag, first-order Markov, and majority-class baselines. Nonzero-jitter results are averaged over 12 seeds, with 95% confidence intervals. Image by author.*
 
 Without knowing the theoretical period, the predictor reached **99.60%** on the raw oscillator bits, while its accuracy on the SHA-256 output stayed close to 50%. Both numbers come from the same online protocol applied to two different targets, and neither shows that the SHA-256 output is unpredictable to every possible method.
 
@@ -137,17 +141,24 @@ This creates a trade-off between two factors:
 
 At a frequency ratio of 4.9505, the oscillator completes almost exactly 500 cycles over 101 sampling intervals:
 
-![Equation 3: Near phase recurrence at lag 101](../figures/eq3_lag101_recurrence.png)
+$$
+101 \times 4.9505 = 500.0005
+$$
 
 The remaining phase offset is only 0.0005 cycles, equivalent to 10 ps at 50 MHz. At higher jitter settings (20–50 ps), the predictor switched to another short relationship:
 
-![Equation 4: Approximate half-cycle inversion at lag 10](../figures/eq4_lag10_inversion.png)
+$$
+10 \times 4.9505 = 49.505
+$$
 
 After 10 samples, the oscillator is almost exactly half a cycle out of phase, so inverting the bit observed 10 samples earlier gives a useful prediction.
 
 In the cumulative random-walk model, the phase difference at lag L has a deterministic offset and a stochastic contribution:
 
-![Equation 5: Deterministic phase offset and accumulated random-walk jitter](../figures/eq5_phase_jitter.png)
+$$
+\Delta\phi_L = \delta_L + \sum_{k=n-L+1}^{n}\varepsilon_k,
+\qquad \sigma_{\Delta\phi}(L) = f_{\mathrm{RO}}\sigma_t\sqrt{L}
+$$
 
 The individual phase-increment errors ε_k are independent, so the accumulated timing uncertainty grows with the square root of the lag. At 5 ps of jitter per sampling step:
 
@@ -184,7 +195,7 @@ All three use the same frequency ratio of 4.9505 and a nominal jitter setting of
 
 ![Figure 4: Prediction accuracy under three phase-noise models](../figures/fig4_tds.png)
 
-*Figure 4. Experiment G: Online prediction accuracy for raw oscillator bits and SHA-256 outputs under three synthetic noise models at a frequency ratio of 4.9505 and a nominal 5 ps jitter setting. Results show six-seed means and 95% confidence intervals.*
+*Figure 4. Experiment G: Online prediction accuracy for raw oscillator bits and SHA-256 outputs under three synthetic noise models at a frequency ratio of 4.9505 and a nominal 5 ps jitter setting. Results show six-seed means and 95% confidence intervals. Image by author.*
 
 With cumulative or correlated phase increments, SHA-256 prediction stayed close to 50%. Under independent phase perturbations, it reached **92.50%**. Because independent phase offsets do not accumulate, the oscillator keeps returning close to the same phase even after many samples. In this configuration, complete 256-bit input blocks matched at a lag of 32,000 about **84.96%** of the time, and identical blocks produce identical digests. The block-match rate and the online prediction accuracy are different measurements, but the first helps explain the second.
 
@@ -203,7 +214,7 @@ Keeping the independent phase-perturbation model, I then changed the ratio betwe
 
 ![Figure 5: Frequency-ratio and noise-model sensitivity](../figures/fig5_tds.png)
 
-*Figure 5. Experiment G: Online prediction accuracy across four frequency ratios and three synthetic noise models at a nominal 5 ps jitter setting. The left panel shows raw bits; the right shows SHA-256 output bits. Each cell is a six-seed mean, evaluated with 192,000 discovery bits, 40,000 validation bits, and a final 30% test split. Ratios labeled 4.953328* and 4.618034* are rounded displays of 4.9505 + 0.002√2 and 4 + (√5 − 1)/2, respectively.*
+*Figure 5. Experiment G: Online prediction accuracy across four frequency ratios and three synthetic noise models at a nominal 5 ps jitter setting. The left panel shows raw bits; the right shows SHA-256 output bits. Each cell is a six-seed mean, evaluated with 192,000 discovery bits, 40,000 validation bits, and a final 30% test split. Ratios labeled 4.953328* and 4.618034* are rounded displays of 4.9505 + 0.002√2 and 4 + (√5 − 1)/2, respectively. Image by author.*
 
 The offsets in Table 4 are deterministic phase mismatches expressed in equivalent time, not the magnitude of the injected jitter.
 
