@@ -12,13 +12,14 @@ https://www.worldprogramming.org/posts/how-to-format-your-tds-draft-a-new-and-im
 - Upload figures/fig1_tds.png, fig2_tds.png, fig4_tds.png, fig5_tds.png.
   These exports are generated from the approved SVG figures at 1600 px wide.
 - Figure 3 remains figures/fig3_blind_prediction.png.
-- Five equation PNGs are figures/eq1_*.png through figures/eq5_*.png.
-- Instead of using the equation PNGs, the editor's native **Block Math**
-  also accepts the original LaTeX. Source expressions are preserved in
+- The article now uses five native LaTeX display-math blocks (`$$ ... $$`)
+  in [draft_TDS_EN.md](draft_TDS_EN.md), suitable for GitHub rendering and
+  conversion to a typeset PDF. The five equation PNGs remain in `figures/`
+  as optional fallbacks; original LaTeX is also preserved in
   [../scripts/export_tds_png.py](../scripts/export_tds_png.py).
-- The upload portal's Image blocks permit a caption and sourcing/licensing
-  attribution. Indicate that the figures are author-created from synthetic
-  simulations; retain the explanatory Figure 1-5 captions in the draft.
+- The Figure 1-5 captions now include **Image by author** sourcing credit.
+  Keep these captions in the PDF or portal, and use the same attribution for
+  any additional featured image prepared by the author.
 
 ## Text and code
 
@@ -38,8 +39,11 @@ https://www.worldprogramming.org/posts/how-to-format-your-tds-draft-a-new-and-im
   and the current TDS policy on AI-generated prose should be confirmed
   with the editorial team before submission.
 - Review paper metadata and all numerical claims against the experiment CSVs.
-- Preview all 5 figures and 5 equations in the contributor editor. Markdown
-  image links on GitHub are not necessarily imported automatically by TDS.
+- Export a self-contained PDF from the Markdown for the first-time contributor
+  application (accepted uploads: PDF/DOC/DOCX, max 50 MB). Confirm that its
+  five figures, five typeset equations, four tables, and code are readable.
+- Preview all figures/equations after any transfer to the portal. Relative
+  Markdown links on GitHub are not necessarily imported automatically by TDS.
 - Confirm the intended copyright/license for the source figures.
 - Do not interpret a failed predictor or hash-bit agreement near 50% as
   a demonstration of cryptographic security or entropy sufficiency.
